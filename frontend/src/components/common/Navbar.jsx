@@ -12,7 +12,7 @@ function Navbar(){
                 {/* Navigation Links */}
                 <div className="hidden md:flex items-center gap-8">
                     <a href="#modules" className="text-dark hover:text-primary">Modules</a>
-                    <a href="#pricing" className="text-dark hover:text-primary">Pricing</a>
+                    <a href="#price" className="text-dark hover:text-primary">Pricing</a>
                     <a href="#about" className="text-dark hover:text-primary">About Us</a>
                     <a href="#contact" className="text-dark hover:text-primary">Contact Us</a>      
                 </div>
