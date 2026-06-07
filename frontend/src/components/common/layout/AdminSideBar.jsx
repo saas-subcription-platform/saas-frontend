@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   CreditCard,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 
 const AdminSidebar = () => {
+  const navigate = useNavigate();
   return (
     <aside className="w-64 bg-white border-r border-border min-h-screen">
       <div className="p-6 border-b border-border">
@@ -21,14 +23,10 @@ const AdminSidebar = () => {
 
       <nav className="p-4 space-y-2">
         {/* Active Item */}
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary/20 cursor-pointer">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary/20 cursor-pointer"
+              onClick={() => navigate("/admin/users")}>
           <Users size={18} />
           <span>Users</span>
-        </div>
-
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
-          <CreditCard size={18} />
-          <span>Membership Plans</span>
         </div>
 
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
@@ -51,12 +49,14 @@ const AdminSidebar = () => {
           <span>Reports</span>
         </div>
 
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer"
+        onClick={() => navigate("/admin/notifications")}>
           <Bell size={18} />
           <span>Notifications</span>
         </div>
 
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer"
+              onClick={() => navigate("/admin/company")}>
           <Building2 size={18} />
           <span>Company Profile</span>
         </div>
