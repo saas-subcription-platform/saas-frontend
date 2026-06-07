@@ -24,6 +24,39 @@ const UserDetailsPage = () => {
             role: "Employee",
             status: "Active",
             joinDate: "10-Jan-2026"
+        },
+        {
+            id: "EMP003",
+            firstName: "Amit",
+            lastName: "Verma",
+            email: "amit@company.com",
+            phone: "9123456789",
+            department: "IT",
+            role: "Admin",
+            status: "Active",
+            joinDate: "15-Jan-2026"
+        },
+        {
+            id: "EMP004",
+            firstName: "Sneha",
+            lastName: "Kulkarni",
+            email: "sneha@company.com",
+            phone: "9876123456",
+            department: "Marketing",
+            role: "Manager",
+            status: "Inactive",
+            joinDate: "20-Jan-2026"
+        },
+        {
+            id: "EMP005",
+            firstName: "Rohan",
+            lastName: "Deshmukh",
+            email: "rohan@company.com",
+            phone: "9988123456",
+            department: "Finance",
+            role: "Employee",
+            status: "Active",
+            joinDate: "25-Jan-2026"
         }
     ];
 

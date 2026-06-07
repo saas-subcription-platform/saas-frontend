@@ -26,6 +26,39 @@ const UsersPage = () => {
             role: "Employee",
             status: "Active",
             joinDate: "10-Jan-2026"
+        },
+        {
+            id: "EMP003",
+            firstName: "Amit",
+            lastName: "Verma",
+            email: "amit@company.com",
+            phone: "9123456789",
+            department: "IT",
+            role: "Admin",
+            status: "Active",
+            joinDate: "15-Jan-2026"
+        },
+        {
+            id: "EMP004",
+            firstName: "Sneha",
+            lastName: "Kulkarni",
+            email: "sneha@company.com",
+            phone: "9876123456",
+            department: "Marketing",
+            role: "Manager",
+            status: "Inactive",
+            joinDate: "20-Jan-2026"
+        },
+        {
+            id: "EMP005",
+            firstName: "Rohan",
+            lastName: "Deshmukh",
+            email: "rohan@company.com",
+            phone: "9988123456",
+            department: "Finance",
+            role: "Employee",
+            status: "Active",
+            joinDate: "25-Jan-2026"
         }
     ]);
 
@@ -33,7 +66,7 @@ const UsersPage = () => {
 
     return (
         <AdminLayout>
-            
+
             <div className="space-y-6">
 
                 <div className="flex justify-between items-center">
@@ -65,22 +98,22 @@ const UsersPage = () => {
                             {users.map((user) => (
                                 <tr key={user.id} className="border-t border-border">
                                     <td className="p-4">{user.id}</td>
-                                    <td className="p-4">{user.name}</td>
+                                    <td className="p-4">{user.firstName} {user.lastName}</td>
                                     <td className="p-4">{user.email}</td>
                                     <td className="p-4">{user.role}</td>
                                     <td className="p-4">{user.status}</td>
 
                                     <td className="p-4 space-x-2">
-                                        <button className="bg-primary text-white px-3 py-2 rounded-lg w-20"
-                                                onClick={() => navigate(`/admin/users/${user.id}`)}>
+                                        <button className="bg-primary text-white px-3 py-2 rounded-lg w-17"
+                                            onClick={() => navigate(`/admin/users/${user.id}`)}>
                                             View
                                         </button>
 
-                                        <button className="bg-primary text-white px-3 py-2 rounded-lg w-20">
+                                        <button className="bg-primary text-white px-3 py-2 rounded-lg w-17">
                                             Edit
                                         </button>
 
-                                        <button className="bg-primary text-white px-3 py-2 rounded-lg w-20">
+                                        <button className="bg-primary text-white px-3 py-2 rounded-lg w-17">
                                             Delete
                                         </button>
                                     </td>
