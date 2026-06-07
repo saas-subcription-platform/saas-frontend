@@ -3,6 +3,8 @@ import LandingPage from "../../features/landing/pages/landingPage";
 import DashboardPage from "../../features/Admin/pages/DashboardPage";
 import UsersPage from "../../features/Admin/pages/UsersPage";
 import UserDetailsPage from "../../features/Admin/pages/UserDetailsPage";
+import NotificationsPage from "../../features/Admin/pages/NotificationsPage";
+import CompanyProfile from "../../features/Admin/pages/CompanyProfilePage";
 
 function AppRoutes(){
     return (
@@ -11,6 +13,9 @@ function AppRoutes(){
             <Route path="/admin/dashboard" element={<DashboardPage/>}/>
             <Route path="/admin/users" element={<UsersPage />} />
             <Route path="/admin/users/:id" element={<UserDetailsPage/>} />
+            <Route path="/admin/notifications" element={<NotificationsPage/>} />
+            <Route path="/admin/company" element={<CompanyProfile/>} />
+
         </Routes>
     )
 }
