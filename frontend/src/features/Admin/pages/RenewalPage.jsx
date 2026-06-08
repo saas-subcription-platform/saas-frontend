@@ -78,7 +78,7 @@ const RenewalPage = () => {
                 Renewal Details
               </h3>
 
-              {/* 🔴 FIX 1: className mistake (was children="space-y-3") */}
+            
               <div className="space-y-3">
                 <p><strong>Renewal Period:</strong> 12 Months</p>
                 <p><strong>New Expiry Date:</strong> 31 Dec 2026</p>
