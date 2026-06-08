@@ -74,7 +74,8 @@ const UsersPage = () => {
                         User Management
                     </h1>
 
-                    <button className="bg-primary text-white px-3 py-2 rounded-lg w-25">
+                    <button className="bg-primary text-white px-3 py-2 rounded-lg w-25"
+                            onClick={() => navigate("/admin/users/add")}>
                         Add User
                     </button>
                 </div>
@@ -109,7 +110,8 @@ const UsersPage = () => {
                                             View
                                         </button>
 
-                                        <button className="bg-primary text-white px-3 py-2 rounded-lg w-17">
+                                        <button className="bg-primary text-white px-3 py-2 rounded-lg w-17"
+                                            onClick={() => navigate(`/admin/users/edit/${user.id}`)}>
                                             Edit
                                         </button>
 

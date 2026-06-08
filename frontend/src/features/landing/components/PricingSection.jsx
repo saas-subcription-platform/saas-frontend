@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import PricingCard from "../../../components/ui/PricingCard";
 import { PRICING_PLANS } from "../constants/pricing.constants";
 
 const PricingSection = () => {
+  const navigate = useNavigate();
   return (
     <section id="price" className="py-24 px-6 bg-background">
       <div className="max-w-7xl mx-auto">
@@ -20,8 +22,9 @@ const PricingSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {PRICING_PLANS.map((plan) => (
             <PricingCard
-              key={plan.title}
+              key={plan.id}
               {...plan}
+              onSelect={() => navigate(`/checkout?plan=${plan.id}`)}
             />
           ))}
         </div>
