@@ -1,6 +1,7 @@
 import AdminLayout from "../../../components/common/layout/AdminLayout";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const EditUserPage = () => {
     const users = [
@@ -86,7 +87,7 @@ const EditUserPage = () => {
     const [status, setStatus] = useState(user.status);
 
     const handlesave = () => {
-        alert("User Updated Successfully")
+        toast.success("User Edited Successfully");
         navigate("/admin/users")
     }
 

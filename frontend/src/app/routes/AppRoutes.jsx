@@ -14,7 +14,7 @@ import EditCompanyPage from "../../features/Admin/pages/EditCompanyPage";
 import SubscriptionsPage from "../../features/Admin/pages/SubscriptionsPage";
 import RenewalPage from "../../features/Admin/pages/RenewalPage";
 import SettingsPage from "../../features/Admin/pages/SettingsPage";
-
+import HelpPage from "../../features/Admin/pages/HelpPage";
 import LoginPage from "../../features/Admin/pages/LoginPage";
 import ForgotPasswordPage from "../../features/Admin/pages/ForgotPasswordPage";
 import EmailSentPage from "../../features/Admin/pages/EmailSentPage";
@@ -23,33 +23,33 @@ import ResetPasswordSuccessPage from "../../features/Admin/pages/ResetPasswordSu
 import RegisterPage from "../../features/Admin/pages/RegisterPage";
 
 function AppRoutes() {
-  return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/checkout" element={<PlanConfigurationPage />} />
-      <Route path="/payment" element={<CheckoutPage />} />
-      <Route path="/payment-success" element={<PaymentSuccessPage />} />
-      <Route path="/admin/dashboard" element={<DashboardPage />} />
-      <Route path="/admin/subscriptions" element={<SubscriptionsPage />} />
-      <Route path="/admin/renewal" element={<RenewalPage />} />
-      <Route path="/admin/settings" element={<SettingsPage />} />
-      <Route path="/admin/users" element={<UsersPage />} />
-      <Route path="/admin/users/add" element={<AddUserPage />} />
-      <Route path="/admin/users/:id" element={<UserDetailsPage />} />
-      <Route path="/admin/notifications" element={<NotificationsPage />} />
-      <Route path="/admin/company" element={<CompanyProfilePage />} />
-      <Route path="/admin/company/edit" element={<EditCompanyPage />} />
-      <Route path="/admin/users/edit/:id" element={<EditUserPage />} />
-
-      <Route path="/admin/login" element={<LoginPage />} />
-      <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/admin/email-sent" element={<EmailSentPage />} />
-      <Route path="/admin/reset-password" element={<ResetPasswordPage />} />
-      <Route
-        path="/admin/password-reset-success"
-        element={<ResetPasswordSuccessPage />}
-      />
-      <Route path="/admin/register" element={<RegisterPage />} />
+    return (
+        <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/checkout" element={<PlanConfigurationPage />} />
+            <Route path="/payment" element={<CheckoutPage/>} />
+            <Route path="/payment-success" element={<PaymentSuccessPage />} />
+            <Route path="/admin/dashboard" element={<DashboardPage />} />
+            <Route path="/admin/subscriptions" element={<SubscriptionsPage />} />
+            <Route path="/admin/renewal" element={<RenewalPage />} />
+            <Route path="/admin/settings" element={<SettingsPage />} />
+            <Route path="/admin/users" element={<UsersPage />} />
+            <Route path="/admin/users/add" element={<AddUserPage />} />
+            <Route path="/admin/users/:id" element={<UserDetailsPage />} />
+            <Route path="/admin/notifications" element={<NotificationsPage />} />
+            <Route path="/admin/company" element={<CompanyProfilePage />} />
+            <Route path="/admin/company/edit" element={<EditCompanyPage />} />
+            <Route path="/admin/users/edit/:id" element={<EditUserPage />} />
+            <Route path="/admin/login" element={<LoginPage />} />
+            <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/admin/email-sent" element={<EmailSentPage />} />
+            <Route path="/admin/reset-password" element={<ResetPasswordPage />} />
+            <Route
+                path="/admin/password-reset-success"
+                element={<ResetPasswordSuccessPage />}
+            />
+            <Route path="/admin/register" element={<RegisterPage />} />
+            <Route path="/admin/help" element={<HelpPage/>}/>
     </Routes>
   );
 }

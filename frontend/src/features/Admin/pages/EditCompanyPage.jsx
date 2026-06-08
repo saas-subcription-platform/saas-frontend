@@ -1,7 +1,7 @@
 import AdminLayout from "../../../components/common/layout/AdminLayout";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
-
+import { toast } from "react-toastify";
 
 const EditCompanyPage = () => {
 
@@ -26,8 +26,8 @@ const EditCompanyPage = () => {
     const [address, setAddress] = useState(company.address);
 
     const handleEdit = () => {
-        alert("Company profile edited Successfully")
-        navigate("/admin/company")
+        toast.success("Company profile edited successfully");
+        navigate("/admin/company");
     }
 
     return (
