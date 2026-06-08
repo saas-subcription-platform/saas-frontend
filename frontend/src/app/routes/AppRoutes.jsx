@@ -21,6 +21,8 @@ import EmailSentPage from "../../features/Admin/pages/EmailSentPage";
 import ResetPasswordPage from "../../features/Admin/pages/ResetPasswordPage";
 import ResetPasswordSuccessPage from "../../features/Admin/pages/ResetPasswordSuccessPage";
 import RegisterPage from "../../features/Admin/pages/RegisterPage";
+import PaymentsPage from "../../features/Admin/pages/PaymentsPage";
+import InvoicesPage from "../../features/Admin/pages/InvoicesPage";
 
 function AppRoutes() {
     return (
@@ -50,6 +52,8 @@ function AppRoutes() {
             />
             <Route path="/admin/register" element={<RegisterPage />} />
             <Route path="/admin/help" element={<HelpPage/>}/>
+            <Route path="/admin/payments" element={<PaymentsPage/>}/>
+            <Route path="/admin/invoices" element={<InvoicesPage/>}/>
     </Routes>
   );
 }

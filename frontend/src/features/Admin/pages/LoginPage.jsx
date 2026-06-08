@@ -9,18 +9,11 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[#F4F7F3] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-12 h-12 bg-[#7A9E7E] rounded-xl flex items-center justify-center text-white font-bold text-lg">
-            SS
-          </div>
-
-          <h1 className="text-3xl font-bold text-gray-800">Saas Subs Login</h1>
-        </div>
+      
 
         {/* Welcome Section */}
         <div className="text-center mb-6">
-          <h2 className="text-4xl font-bold text-gray-800">Welcome Back</h2>
+          <h2 className="text-4xl font-bold text-gray-800">Login</h2>
 
           <p className="text-gray-500 mt-2">
             Sign in to continue managing subscriptions

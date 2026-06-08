@@ -34,12 +34,16 @@ const AdminSidebar = () => {
               <RefreshCw size={18} />
               <span>Subscriptions</span>
             </Link>
-       <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
+       <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer"
+       onClick={() => navigate("/admin/payments")}
+       >
           <Receipt size={18} />
           <span>Payments</span>
         </div>
 
-      <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
+      <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer"
+        onClick={() => navigate("/admin/invoices")}
+      >
            <FileText size={18} />
            <span>Invoices</span>
          </div>
