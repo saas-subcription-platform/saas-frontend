@@ -23,6 +23,7 @@ import ResetPasswordSuccessPage from "../../features/Admin/pages/ResetPasswordSu
 import RegisterPage from "../../features/Admin/pages/RegisterPage";
 import PaymentsPage from "../../features/Admin/pages/PaymentsPage";
 import InvoicesPage from "../../features/Admin/pages/InvoicesPage";
+import HomePage from "../../features/Admin/pages/HomePage";
 
 function AppRoutes() {
     return (
@@ -54,6 +55,7 @@ function AppRoutes() {
             <Route path="/admin/help" element={<HelpPage/>}/>
             <Route path="/admin/payments" element={<PaymentsPage/>}/>
             <Route path="/admin/invoices" element={<InvoicesPage/>}/>
+            <Route path="/admin/home" element={<HomePage/>}/>
     </Routes>
   );
 }
