@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #69846B;
+  --color-primary-hover: #5A735C;
+  --color-secondary: #9CB494;
+  --color-background: #F8F9F6;
+  --color-dark: #3F4E5A;
+  --color-border: #D7DEC8;
+}
+
+.Toastify__toast--success {
+  background: #F8F9F6 !important;
+  color: #3F4E5A !important;
+  border: 1px solid #D7DEC8 !important;
+}
+
+.Toastify__toast-icon svg {
+  fill: #69846B !important;
+}
+
+.Toastify__progress-bar--success {
+  background: #69846B !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
