@@ -1,10 +1,12 @@
 import Navbar from "../../../components/common/Navbar";
 import AboutSection from "../components/AboutusSection";
-import FeaturesSection from "../components/featureSection";
+import FeaturesSection from "../components/FeatureSection";
 import Footer from "../components/FooterSection";
 import HeroSection from "../components/HeroSection";
 import PricingSection from "../components/PricingSection";
 import WorkflowSection from "../components/WorkflowSection";
+
+
 
 function LandingPage(){
     return (
@@ -15,6 +17,7 @@ function LandingPage(){
             <FeaturesSection/>
             <PricingSection/>
             <AboutSection/>
+            {/* <ContactUs/> */}
             <Footer/>
         </>
     )
