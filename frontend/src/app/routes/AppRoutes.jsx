@@ -8,10 +8,18 @@
 import UserDetailsPage from "../../features/Admin/pages/UserDetailsPage";
 import NotificationsPage from "../../features/Admin/pages/NotificationsPage";
 import CompanyProfile from "../../features/Admin/pages/CompanyProfilePage";
+import PlanConfigurationPage from "../../features/landing/pages/PlanConfigurationPage";
+import CheckoutPage from "../../features/landing/pages/CheckoutPage";
+import PaymentSuccessPage from "../../features/landing/pages/PaymentSuccessPage";
+
+
  function AppRoutes(){
     return (
        <Routes>
                 <Route path="/" element={<LandingPage/>}/>
+                <Route path="/checkout" element={<PlanConfigurationPage />} />
+                <Route path="/payment" element={<CheckoutPage/>} />
+                <Route path="/payment-success" element={<PaymentSuccessPage />} />
                 <Route path="/admin/dashboard" element={<DashboardPage/>}/>
                 <Route path="/admin/subscriptions"element={<SubscriptionsPage/>}/>
                 <Route path="/admin/renewal"element={<RenewalPage />}/>
