@@ -1,6 +1,9 @@
 import AdminLayout from "../../../components/common/layout/AdminLayout";
+import { useNavigate } from "react-router-dom";
 
 const CompanyProfile = () => {
+
+    
     const company = {
         name: "Tech Solutions Pvt Ltd",
         email: "contact@tech.com",
@@ -11,6 +14,8 @@ const CompanyProfile = () => {
         address: "Hinjewadi Phase 2, Pune, Maharashtra"
     };  
 
+    const navigate = useNavigate();
+
     return(
         <AdminLayout>
             <div className="space-y-6">
@@ -18,7 +23,8 @@ const CompanyProfile = () => {
                     <h1 className="text-4xl font-bold text-dark">
                         Company Profile
                     </h1>
-                    <button className="bg-primary text-white px-3 py-2 rounded-lg w-40">
+                    <button className="bg-primary text-white px-3 py-2 rounded-lg w-40"
+                            onClick={() => navigate("/admin/company/edit")}>
                         Edit Profile
                     </button>
                 </div>
