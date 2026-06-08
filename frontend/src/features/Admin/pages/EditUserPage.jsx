@@ -1,7 +1,8 @@
 import AdminLayout from "../../../components/common/layout/AdminLayout";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 
-const UserDetailsPage = () => {
+const EditUserPage = () => {
     const users = [
         {
             id: "EMP001",
@@ -59,28 +60,43 @@ const UserDetailsPage = () => {
             joinDate: "25-Jan-2026"
         }
     ];
-    
-    const navigate = useNavigate();
+
     const { id } = useParams();
 
     const user = users.find(
-        (u) => u.id === id
-    );
+        (u) => u.id == id
+    )
+
+    const navigate = useNavigate();
 
     if (!user) {
         return (
             <AdminLayout>
-                <h1>User not found</h1>
+                User not found
             </AdminLayout>
         )
     }
 
+    const [firstName, setFirstName] = useState(user.firstName);
+    const [lastName, setLastName] = useState(user.lastName);
+    const [email, setEmail] = useState(user.email);
+    const [phone, setPhone] = useState(user.phone);
+    const [department, setDepartment] = useState(user.department);
+    const [role, setRole] = useState(user.role);
+    const [status, setStatus] = useState(user.status);
+
+    const handlesave = () => {
+        alert("User Updated Successfully")
+        navigate("/admin/users")
+    }
+
     return (
         <AdminLayout>
-            <div className="bg-white rounded-xl shadow-md p-8">
+            <div className="space-y-6">
+
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-4xl font-bold text-dark">
-                        User Details
+                        Edit User
                     </h1>
 
                     <button className="bg-primary text-white px-4 py-2 rounded-lg"
@@ -89,47 +105,35 @@ const UserDetailsPage = () => {
                     </button>
                 </div>
 
-                <div className="space-y-4">
-                    <p>
-                        <strong>Employee ID:</strong> {user.id}
-                    </p>
+                <div className="bg-white p-8 rounded-xl shadow-md space-y-4">
+                    <input value={user.id} 
+                    disabled
+                    className="w-full border p-3 rounded"/>
 
-                    <p>
-                        <strong>First Name:</strong> {user.firstName}
-                    </p>
+                    <input value={firstName} 
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="w-full border p-3 rounded"/>
 
-                    <p>
-                        <strong>Last Name:</strong> {user.lastName}
-                    </p>
+                    <input value={lastName} 
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="w-full border p-3 rounded"/>
 
-                    <p>
-                        <strong>Email:</strong> {user.email}
-                    </p>
+                    <input value={email} 
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full border p-3 rounded"/>
 
-                    <p>
-                        <strong>Phone:</strong> {user.phone}
-                    </p>
+                    <input value={phone} 
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full border p-3 rounded"/>
 
-                    <p>
-                        <strong>Department:</strong> {user.department}
-                    </p>
-
-                    <p>
-                        <strong>Role:</strong> {user.role}
-                    </p>
-
-                    <p>
-                        <strong>Status:</strong> {user.status}
-                    </p>
-
-                    <p>
-                        <strong>Join Date:</strong> {user.joinDate}
-                    </p>
+                    <button className="bg-primary text-white px-4 py-2 rounded-lg"
+                            onClick={handlesave}>
+                            Save Changes
+                    </button>
                 </div>
             </div>
         </AdminLayout>
     )
+
 }
-
-
-export default UserDetailsPage;
+export default EditUserPage;
