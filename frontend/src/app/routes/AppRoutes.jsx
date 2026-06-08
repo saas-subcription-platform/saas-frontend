@@ -15,6 +15,7 @@ import EditCompanyPage from "../../features/Admin/pages/EditCompanyPage";
 import SubscriptionsPage from "../../features/Admin/pages/SubscriptionsPage";
 import RenewalPage from "../../features/Admin/pages/RenewalPage";
 import SettingsPage from "../../features/Admin/pages/SettingsPage";
+import HelpPage from "../../features/Admin/pages/HelpPage";
 
 
 function AppRoutes() {
@@ -35,6 +36,7 @@ function AppRoutes() {
             <Route path="/admin/company" element={<CompanyProfilePage />} />
             <Route path="/admin/company/edit" element={<EditCompanyPage />} />
             <Route path="/admin/users/edit/:id" element={<EditUserPage />} />
+            <Route path="/admin/help" element={<HelpPage />} />
 
             </Routes>
     )

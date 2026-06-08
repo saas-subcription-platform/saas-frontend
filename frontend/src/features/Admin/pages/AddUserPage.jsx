@@ -1,6 +1,7 @@
 import AdminLayout from "../../../components/common/layout/AdminLayout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {toast} from "react-toastify";
 
 const AddUserPage = () => {
 
@@ -16,7 +17,7 @@ const AddUserPage = () => {
 
     const handleAddUser = () => {
 
-        alert("User Added Successfully");
+        toast.success("User Added Successfully");
 
         navigate("/admin/users");
     };
