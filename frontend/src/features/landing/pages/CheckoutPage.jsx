@@ -46,7 +46,7 @@ const CheckoutPage = () => {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-dark/70 font-semibold">Already have an account?</span>
-            <button className="bg-dark text-white px-5 py-2 rounded-lg text-xs font-bold tracking-wide hover:bg-dark/90 transition">
+            <button onClick={() => navigate("/admin/login")} className="bg-dark text-white px-5 py-2 rounded-lg text-xs font-bold tracking-wide hover:bg-dark/90 transition">
               Sign in
             </button>
           </div>

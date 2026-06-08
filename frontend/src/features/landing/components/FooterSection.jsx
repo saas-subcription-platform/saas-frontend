@@ -33,7 +33,7 @@ const Footer = () => {
               </li>
 
               <li>
-                <a href="#pricing">Pricing</a>
+                <a href="#price">Pricing</a>
               </li>
 
               <li>
@@ -57,7 +57,7 @@ const Footer = () => {
           </div>
 
           {/* Contact */}
-          <div>
+          <div id="contact">
             <h3 className="font-semibold mb-4">
               Contact
             </h3>

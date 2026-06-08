@@ -1,7 +1,26 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState,useRef,useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 
 function Navbar(){
     const navigate = useNavigate();
+    const [showModules, setShowModules] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !    dropdownRef.current.contains(event.target)) {
+                setShowModules(false);
+            }
+        };
+
+  document.addEventListener("click", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("click", handleClickOutside);
+  };
+}, []);
+    
     return(
         <nav className="bg-white border-b border-border sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -11,8 +30,34 @@ function Navbar(){
                     <h1 className="text-2xl font-bold text-dark">SaaS Platform</h1>
                 </div>
                 {/* Navigation Links */}
-                <div className="hidden md:flex items-center gap-8">
-                    <a href="#modules" className="text-dark hover:text-primary">Modules</a>
+                        <div className="hidden md:flex items-center gap-8">
+                            <div ref={dropdownRef} className="relative" onMouseEnter={() => setShowModules(true)}
+                                onClick={() => setShowModules(false)}>
+                                <button className="flex items-center gap-1 text-dark hover:text-primary">
+                                    Modules
+                                    <ChevronDown size={16} />
+                                </button>
+
+                                {showModules && (
+                                    <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-border rounded-xl shadow-lg py-2 z-50">
+                                    <a href="#user-management" className="block px-5 py-3 hover:bg-green-50">
+                                        User Management
+                                    </a>
+
+                                    <a href="#subscription-tracking" className="block px-5 py-3 hover:bg-green-50">
+                                        Subscription Tracking
+                                    </a>
+
+                                    <a href="#billing-management" className="block px-5 py-3 hover:bg-green-50">
+                                            Billing Management
+                                    </a>
+
+                                    <a href="#plan-management" className="block px-5 py-3 hover:bg-green-50">
+                                        Plan Management
+                                    </a>
+                    </div>
+                )}
+                </div>
                     <a href="#price" className="text-dark hover:text-primary">Pricing</a>
                     <a href="#about" className="text-dark hover:text-primary">About Us</a>
                     <a href="#contact" className="text-dark hover:text-primary">Contact Us</a>      

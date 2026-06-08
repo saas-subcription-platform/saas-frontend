@@ -22,3 +22,7 @@
 .Toastify__progress-bar--success {
   background: #69846B !important;
 }
+
+html {
+  scroll-behavior: smooth;
+}
