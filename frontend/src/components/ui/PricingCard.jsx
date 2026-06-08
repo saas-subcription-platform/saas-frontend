@@ -6,6 +6,7 @@ const PricingCard = ({
     description,
     features,
     popular = false,
+    onSelect,
 }) =>{
     return (
         <div
@@ -72,10 +73,7 @@ const PricingCard = ({
         ))}
       </ul>
 
-      <button
-        className={`
-          w-full mt-8 py-3 rounded-xl font-medium
-          transition-all duration-300
+      <button onClick={onSelect} className={` w-full mt-8 py-3 rounded-xl font-medium transition-all duration-300
           ${
             popular
               ? "bg-primary text-white hover:bg-primary-hover"

@@ -1,5 +1,6 @@
 export const PRICING_PLANS =[
     {
+        id: "starter",
         title: "Starter",
         price: "₹999",
         description: "Perfect for small organizations getting started.",
@@ -11,6 +12,7 @@ export const PRICING_PLANS =[
         ],
     },
     {
+        id: "professional",
         title: "Professional",
         price: "₹2999",
         popular:true,
@@ -24,6 +26,7 @@ export const PRICING_PLANS =[
         ],
     },
     {
+        id: "enterprise",
         title: "Enterprise",
         price: "Custom",
         description: "For large organizations requiring maximum flexibility.",
