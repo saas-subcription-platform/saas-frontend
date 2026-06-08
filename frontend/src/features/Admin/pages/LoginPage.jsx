@@ -74,7 +74,7 @@ export default function Login() {
           {/* Login Button */}
           {/* Login Button */}
 <Link
-  to="/admin/users"
+  to="/admin/home"
   className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6 flex items-center justify-center gap-2 transition"
 >
   Sign In

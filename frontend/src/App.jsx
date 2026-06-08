@@ -5,6 +5,7 @@ import heroImg from './assets/hero.png'
 import AppRoutes from './app/routes/AppRoutes'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"
+import ScrollToTop from './components/ui/ScrollToTop'
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <>
       <AppRoutes/>
       <ToastContainer/>
+      <ScrollToTop />
     </>
   )
 }
