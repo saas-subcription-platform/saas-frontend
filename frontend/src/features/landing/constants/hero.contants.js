@@ -4,7 +4,7 @@ export const HERO_CONTENT = {
 
     description:
     "Streamline your subscription business with powerful tools for customer management, automated billing, and insightful analytics. Everything you need to grow your subscription business.",
-    primaryButtonText:"Start Free Trail",
+    primaryButtonText:"Start Free Trial",
     secondaryButtonText:"Learn More",
 
     benifits:[
