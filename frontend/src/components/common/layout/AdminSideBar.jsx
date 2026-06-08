@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  Users,
+ Users,
   CreditCard,
   RefreshCw,
   Receipt,
@@ -8,7 +8,7 @@ import {
   BarChart3,
   Bell,
   Building2,
-  Settings,
+   Settings,
 } from "lucide-react";
 
 const AdminSidebar = () => {
@@ -17,10 +17,9 @@ const AdminSidebar = () => {
     <aside className="w-64 bg-white border-r border-border min-h-screen">
       <div className="p-6 border-b border-border">
         <h1 className="text-2xl font-bold text-primary">
-          SaaS Subscription
-        </h1>
-      </div>
-
+           SaaS Subscription
+         </h1>
+       </div>
       <nav className="p-4 space-y-2">
         {/* Active Item */}
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary/20 cursor-pointer"
@@ -28,27 +27,27 @@ const AdminSidebar = () => {
           <Users size={18} />
           <span>Users</span>
         </div>
-
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
-          <RefreshCw size={18} />
-          <span>Subscriptions</span>
-        </div>
-
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
+          <Link
+            to="/admin/subscriptions"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer"
+            >
+              <RefreshCw size={18} />
+              <span>Subscriptions</span>
+            </Link>
+       <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
           <Receipt size={18} />
           <span>Payments</span>
         </div>
 
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
-          <FileText size={18} />
-          <span>Invoices</span>
-        </div>
+      <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
+           <FileText size={18} />
+           <span>Invoices</span>
+         </div>
 
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
-          <BarChart3 size={18} />
+           <BarChart3 size={18} />
           <span>Reports</span>
-        </div>
-
+         </div>
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer"
         onClick={() => navigate("/admin/notifications")}>
           <Bell size={18} />
@@ -61,13 +60,22 @@ const AdminSidebar = () => {
           <span>Company Profile</span>
         </div>
 
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
-          <Settings size={18} />
+         {/* <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer">
+           <Settings size={18} />
           <span>Settings</span>
-        </div>
-      </nav>
-    </aside>
-  );
-};
+         </div> */}
 
-export default AdminSidebar;
+         <Link
+           to="/admin/settings"
+           className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10"
+           >
+            <Settings size={18} />
+            <span>Settings</span>
+           </Link>
+       </nav>
+     </aside>
+   );
+ };
+
+ export default AdminSidebar; 
+
