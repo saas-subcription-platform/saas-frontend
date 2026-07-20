@@ -9,7 +9,7 @@ import PaymentSuccessPage from "../../features/landing/pages/PaymentSuccessPage"
 // Admin
 import {
     DashboardPage,
-    HomePage,
+    AdminHomePage,
     UsersPage,
     UserDetailsPage,
     AddUserPage,
@@ -32,6 +32,10 @@ import ForgotPasswordPage from "../../features/Auth/pages/ForgotPasswordPage";
 import EmailSentPage from "../../features/Auth/pages/EmailSentPage";
 import ResetPasswordPage from "../../features/Auth/pages/ResetPasswordPage";
 import ResetPasswordSuccessPage from "../../features/Auth/pages/ResetPasswordSuccessPage";
+
+
+import EmployeeHomePage from "../../features/Employee/EmpDashboard"
+
 
 function AppRoutes() {
     return (
@@ -63,7 +67,9 @@ function AppRoutes() {
             <Route path="/admin/help" element={<HelpPage/>}/>
             <Route path="/admin/payments" element={<PaymentsPage/>}/>
             <Route path="/admin/invoices" element={<InvoicesPage/>}/>
-            <Route path="/admin/home" element={<HomePage/>}/>
+            <Route path="/admin/home" element={<AdminHomePage/>}/>
+
+            <Route path="/employee/home" element={<EmployeeHomePage/>}/>
     </Routes>
   );
 }
