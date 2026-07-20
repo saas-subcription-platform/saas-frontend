@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import AdminLayout from "../../../components/common/layout/AdminLayout";
+import AdminLayout from "../../../../components/common/layout/AdminLayout";
 
 export default function Invoices() {
   const invoices = [
