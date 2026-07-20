@@ -25,7 +25,7 @@ const DashboardPage = () => {
         
         <div className="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:shadow-xl transition">
           <MessageSquare size={40} className="text-purple-600 mb-4" />
-          <h3 className="text-xl font-semibold">Discuss</h3>
+          <h3 className="text-xl font-semibold">Team Collaboration</h3>
           <p className="text-gray-500 mt-2">
             Chat and collaborate with your team.
           </p>
