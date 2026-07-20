@@ -65,11 +65,11 @@ function Navbar(){
                 {/* Right Side Buttons */}
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-4">
-                        <button onClick={()=>navigate('/admin/login')} className="px-4 py-2 rounded-lg border border-border text-dark hover:bg-gray-50">
+                        <button onClick={()=>navigate('/login')} className="px-4 py-2 rounded-lg border border-border text-dark hover:bg-gray-50">
                             Login
                         </button>
                         <button 
-                        onClick={() => navigate('/admin/register')}
+                        onClick={() => navigate('/register')}
                         className="px-5 py-2 rounded-lg bg-primary text-white hover:bg-primary-hover">
                             Get Started
                         </button>

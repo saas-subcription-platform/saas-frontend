@@ -27,7 +27,7 @@ export default function ResetPassword() {
     return;
   }
 
-  navigate("/admin/password-reset-success");
+  navigate("/password-reset-success");
 };
 
   return (
