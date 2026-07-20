@@ -1,6 +1,6 @@
 // Dashboard
 export { default as DashboardPage } from "./pages/dashboard/DashboardPage";
-export { default as HomePage } from "./pages/dashboard/HomePage";
+export { default as AdminHomePage } from "./pages/dashboard/HomePage";
 
 // Users
 export { default as UsersPage } from "./pages/users/UsersPage";
