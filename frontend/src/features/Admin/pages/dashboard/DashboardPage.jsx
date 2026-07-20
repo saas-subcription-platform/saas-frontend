@@ -1,4 +1,4 @@
-import AdminLayout from "../../../components/common/layout/AdminLayout";
+import AdminLayout from "../../../../components/common/layout/AdminLayout";
 
 const DashboardPage = () => {
   return (
