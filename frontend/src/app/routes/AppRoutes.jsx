@@ -23,7 +23,9 @@ import ResetPasswordSuccessPage from "../../features/Auth/pages/ResetPasswordSuc
 import RegisterPage from "../../features/Auth/pages/RegisterPage";
 import PaymentsPage from "../../features/Admin/pages/PaymentsPage";
 import InvoicesPage from "../../features/Admin/pages/InvoicesPage";
-import HomePage from "../../features/Admin/pages/HomePage";
+import AdminHomePage from "../../features/Admin/pages/HomePage";
+
+import EmployeeHomePage from "../../features/Employee/EmpDashboard"
 
 function AppRoutes() {
     return (
@@ -55,7 +57,9 @@ function AppRoutes() {
             <Route path="/admin/help" element={<HelpPage/>}/>
             <Route path="/admin/payments" element={<PaymentsPage/>}/>
             <Route path="/admin/invoices" element={<InvoicesPage/>}/>
-            <Route path="/admin/home" element={<HomePage/>}/>
+            <Route path="/admin/home" element={<AdminHomePage/>}/>
+
+            <Route path="/employee/home" element={<EmployeeHomePage/>}/>
     </Routes>
   );
 }
