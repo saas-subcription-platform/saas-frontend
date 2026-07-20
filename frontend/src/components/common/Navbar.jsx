@@ -40,20 +40,20 @@ function Navbar(){
 
                                 {showModules && (
                                     <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-border rounded-xl shadow-lg py-2 z-50">
-                                    <a href="#user-management" className="block px-5 py-3 hover:bg-green-50">
-                                        User Management
+                                    <a href="#feature" className="block px-5 py-3 hover:bg-green-50">
+                                       Timesheet Management
                                     </a>
 
-                                    <a href="#subscription-tracking" className="block px-5 py-3 hover:bg-green-50">
-                                        Subscription Tracking
+                                    <a href="#feature" className="block px-5 py-3 hover:bg-green-50">
+                                        Leave Management
                                     </a>
 
-                                    <a href="#billing-management" className="block px-5 py-3 hover:bg-green-50">
-                                            Billing Management
+                                    <a href="#feature" className="block px-5 py-3 hover:bg-green-50">
+                                            Goals & Performance
                                     </a>
 
-                                    <a href="#plan-management" className="block px-5 py-3 hover:bg-green-50">
-                                        Plan Management
+                                    <a href="#feature" className="block px-5 py-3 hover:bg-green-50">
+                                            Team Collaboration
                                     </a>
                     </div>
                 )}
@@ -65,11 +65,11 @@ function Navbar(){
                 {/* Right Side Buttons */}
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-4">
-                        <button onClick={()=>navigate('/admin/login')} className="px-4 py-2 rounded-lg border border-border text-dark hover:bg-gray-50">
+                        <button onClick={()=>navigate('/login')} className="px-4 py-2 rounded-lg border border-border text-dark hover:bg-gray-50">
                             Login
                         </button>
                         <button 
-                        onClick={() => navigate('/admin/register')}
+                        onClick={() => navigate('/register')}
                         className="px-5 py-2 rounded-lg bg-primary text-white hover:bg-primary-hover">
                             Get Started
                         </button>

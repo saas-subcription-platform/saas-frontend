@@ -1,4 +1,4 @@
-import AdminLayout from "../../../components/common/layout/AdminLayout";
+import AdminLayout from "../../../../components/common/layout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {

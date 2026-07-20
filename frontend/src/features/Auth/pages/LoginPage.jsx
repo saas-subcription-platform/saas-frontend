@@ -23,7 +23,7 @@ export default function Login() {
         {/* Login Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
           <h3 className="text-xl font-semibold text-gray-800 mb-6">
-            Company Admin Login
+            Login
           </h3>
 
           {/* Email */}
@@ -47,7 +47,7 @@ export default function Login() {
               </label>
 
               <Link
-                to="/admin/forgot-password"
+                to="/forgot-password"
                 className="text-sm text-[#7A9E7E] hover:underline"
               >
                 Forgot Password?
@@ -81,11 +81,19 @@ export default function Login() {
   <ArrowRight size={18} />
 </Link>
 
+<Link
+  to="/employee/home"
+  className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6 flex items-center justify-center gap-2 transition"
+>
+  Sign In (Employee)
+  <ArrowRight size={18} />
+</Link>
+
           {/* Register */}
           <p className="text-center text-gray-600 mt-6">
             Don't have an account?{" "}
             <Link
-              to="/admin/register"
+              to="/register"
               className="text-[#7A9E7E] font-semibold hover:underline"
             >
               Register

@@ -1,4 +1,4 @@
-import AdminLayout from "../../../components/common/layout/AdminLayout";
+import AdminLayout from "../../../../components/common/layout/AdminLayout";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";

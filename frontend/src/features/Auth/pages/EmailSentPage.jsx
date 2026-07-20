@@ -27,7 +27,7 @@ export default function EmailSent() {
 
         {/* Demo Button */}
         <button
-          onClick={() => navigate("/admin/reset-password")}
+          onClick={() => navigate("/reset-password")}
           className="w-full mt-6 bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg"
         >
           Continue (Demo)
@@ -35,7 +35,7 @@ export default function EmailSent() {
 
         <div className="mt-5">
           <Link
-            to="/admin/login"
+            to="/login"
             className="inline-flex items-center gap-2 text-[#7A9E7E] hover:underline"
           >
             <ArrowLeft size={16} />

@@ -1,27 +1,20 @@
 export const FEATURES = [
     {
-        title:"User Management",
-        description:"Manage customer profiles and subscription details from a centralized dashboard.",
+        title:"Timesheet Management",
+        description:"Track daily and weekly work hours with an easy-to-use timesheet submission and approval system.",
     },
     {
-        title:"Subscription Tracking",
-        description:"Track active subscriptions, renewals, and plan changes with ease.",
+        title:"Leave Management",
+        description:"Submit, approve, and monitor employee leave requests with real-time status updates.",
     },
     {
-        title:"Payment Processing",
-        description:"Handle subscription payments securely through integrated payment gateways.",
+        title:"Goals & Performance",
+        description:"Set objectives, monitor progress, and evaluate employee performance efficiently.",
     },
     {
-        title:"Automated Billing",
-        description:"Generate recurring bills and payment reminders automatically.",
+        title:"Team Collaboration",
+        description:"Enhance communication through discussions, announcements, and seamless team collaboration.",
     },
-    {
-        title:"Plan Management",
-        description:"Create, update, and manage subscription plans tailored to user needs.",
-    },
-    {
-        title:"Multi-tenant Support",
-        description:"Support multiple organizations and manage them independently.",
-    },
+   
     
 ];

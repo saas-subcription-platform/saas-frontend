@@ -12,7 +12,7 @@ export default function ForgotPassword() {
       return;
     }
 
-    navigate("/admin/email-sent");
+    navigate("/email-sent");
   };
 
   return (
@@ -74,7 +74,7 @@ export default function ForgotPassword() {
           {/* Back */}
           <div className="text-center mt-5">
             <Link
-              to="/"
+              to="/login"
               className="inline-flex items-center gap-2 text-[#7A9E7E] hover:underline"
             >
               <ArrowLeft size={16} />
