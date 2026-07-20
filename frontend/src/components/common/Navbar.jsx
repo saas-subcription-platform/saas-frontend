@@ -40,20 +40,20 @@ function Navbar(){
 
                                 {showModules && (
                                     <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-border rounded-xl shadow-lg py-2 z-50">
-                                    <a href="#user-management" className="block px-5 py-3 hover:bg-green-50">
-                                        User Management
+                                    <a href="#feature" className="block px-5 py-3 hover:bg-green-50">
+                                       Timesheet Management
                                     </a>
 
-                                    <a href="#subscription-tracking" className="block px-5 py-3 hover:bg-green-50">
-                                        Subscription Tracking
+                                    <a href="#feature" className="block px-5 py-3 hover:bg-green-50">
+                                        Leave Management
                                     </a>
 
-                                    <a href="#billing-management" className="block px-5 py-3 hover:bg-green-50">
-                                            Billing Management
+                                    <a href="#feature" className="block px-5 py-3 hover:bg-green-50">
+                                            Goals & Performance
                                     </a>
 
-                                    <a href="#plan-management" className="block px-5 py-3 hover:bg-green-50">
-                                        Plan Management
+                                    <a href="#feature" className="block px-5 py-3 hover:bg-green-50">
+                                            Team Collaboration
                                     </a>
                     </div>
                 )}
