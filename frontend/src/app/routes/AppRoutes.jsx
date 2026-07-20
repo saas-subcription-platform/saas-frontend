@@ -1,29 +1,37 @@
 import { Routes, Route } from "react-router-dom";
-import LandingPage from "../../features/landing/pages/landingPage";
-import DashboardPage from "../../features/Admin/pages/DashboardPage";
-import UsersPage from "../../features/Admin/pages/UsersPage";
-import UserDetailsPage from "../../features/Admin/pages/UserDetailsPage";
-import NotificationsPage from "../../features/Admin/pages/NotificationsPage";
+
+// Landing
+import LandingPage from "../../features/landing/pages/LandingPage";
 import PlanConfigurationPage from "../../features/landing/pages/PlanConfigurationPage";
 import CheckoutPage from "../../features/landing/pages/CheckoutPage";
 import PaymentSuccessPage from "../../features/landing/pages/PaymentSuccessPage";
-import CompanyProfilePage from "../../features/Admin/pages/CompanyProfilePage";
-import EditUserPage from "../../features/Admin/pages/EditUserPage";
-import AddUserPage from "../../features/Admin/pages/AddUserPage";
-import EditCompanyPage from "../../features/Admin/pages/EditCompanyPage";
-import SubscriptionsPage from "../../features/Admin/pages/SubscriptionsPage";
-import RenewalPage from "../../features/Admin/pages/RenewalPage";
-import SettingsPage from "../../features/Admin/pages/SettingsPage";
-import HelpPage from "../../features/Admin/pages/HelpPage";
+
+// Admin
+import {
+    DashboardPage,
+    HomePage,
+    UsersPage,
+    UserDetailsPage,
+    AddUserPage,
+    EditUserPage,
+    CompanyProfilePage,
+    EditCompanyPage,
+    SettingsPage,
+    SubscriptionsPage,
+    RenewalPage,
+    PaymentsPage,
+    InvoicesPage,
+    NotificationsPage,
+    HelpPage,
+} from "../../features/Admin";
+
+// Auth
 import LoginPage from "../../features/Auth/pages/LoginPage";
+import RegisterPage from "../../features/Auth/pages/RegisterPage";
 import ForgotPasswordPage from "../../features/Auth/pages/ForgotPasswordPage";
 import EmailSentPage from "../../features/Auth/pages/EmailSentPage";
 import ResetPasswordPage from "../../features/Auth/pages/ResetPasswordPage";
 import ResetPasswordSuccessPage from "../../features/Auth/pages/ResetPasswordSuccessPage";
-import RegisterPage from "../../features/Auth/pages/RegisterPage";
-import PaymentsPage from "../../features/Admin/pages/PaymentsPage";
-import InvoicesPage from "../../features/Admin/pages/InvoicesPage";
-import HomePage from "../../features/Admin/pages/HomePage";
 
 function AppRoutes() {
     return (
