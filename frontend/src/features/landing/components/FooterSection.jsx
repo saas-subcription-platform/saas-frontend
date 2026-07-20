@@ -63,7 +63,7 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-2 text-white/70">
-              <li>support@subsmanager.com</li>
+              <li>support@subscription.com</li>
               <li>Pune, Maharashtra</li>
             </ul>
           </div>
@@ -71,7 +71,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-6 text-center text-white/60">
-          © {new Date().getFullYear()} SubsManager. All rights reserved.
+          © {new Date().getFullYear()} Subscription Platform. All rights reserved.
         </div>
 
       </div>

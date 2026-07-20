@@ -1,20 +1,16 @@
 import { FEATURES } from "../constants/feature.constants";
 import {
-  Users,
-  CreditCard,
-  Receipt,
-  Layers,
-  Building2,
-  RefreshCw,
+  Clock3,
+  CalendarDays,
+  Target,
+  MessageSquare,
 } from "lucide-react";
 
 const iconMap ={
-    "User Management": Users,
-    "Subscription Tracking": RefreshCw,
-    "Payment Processing": CreditCard,
-    "Automated Billing": Receipt,
-    "Plan Management": Layers,
-    "Multi-tenant Support": Building2,
+    "Timesheet Management": Clock3,
+    "Leave Management": CalendarDays,
+    "Goals & Performance": Target,
+    "Team Collaboration": MessageSquare,
 }
 
 const FeaturesSection =()=>{
@@ -33,12 +29,12 @@ const FeaturesSection =()=>{
                     </p>
                 </div>
                 {/*Feature Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                     {FEATURES.map((features) =>{
                         const IconComponent = iconMap[features.title];
 
                         return (
-                            <div key={features.title} className="bg-white border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+                            <div key={features.title} className="bg-white border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300">
                                 <div className="w-14 h-14 rounded-xl bg-secondary/20 flex items-center justify-center mb-6">
                                     <IconComponent size={28} className="text-primary" />
                                 </div>
