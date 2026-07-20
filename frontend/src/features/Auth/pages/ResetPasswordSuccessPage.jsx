@@ -23,7 +23,7 @@ export default function PasswordResetSuccess() {
         </p>
 
         <button
-          onClick={() => navigate("/admin/login")}
+          onClick={() => navigate("/login")}
           className="w-full mt-6 bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg"
         >
           Back To Login

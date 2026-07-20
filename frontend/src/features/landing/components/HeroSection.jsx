@@ -23,7 +23,7 @@ const HeroSection = () => {
         {/*Buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
           <button
-            onClick={() => navigate("/admin/register")}
+            onClick={() => navigate("/register")}
             className="bg-primary hover:bg-primary-hover text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
           >
             {HERO_CONTENT.primaryButtonText}
