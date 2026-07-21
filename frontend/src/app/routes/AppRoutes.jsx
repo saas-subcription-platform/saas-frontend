@@ -35,6 +35,7 @@ import ResetPasswordSuccessPage from "../../features/Auth/pages/ResetPasswordSuc
 
 
 import EmployeeHomePage from "../../features/Employee/EmpDashboard"
+import TeamCollaborationPage from "../../features/Employee/team-collab/pages/TeamCollaborationPage";
 
 
 function AppRoutes() {
@@ -70,6 +71,7 @@ function AppRoutes() {
             <Route path="/admin/home" element={<AdminHomePage/>}/>
 
             <Route path="/employee/home" element={<EmployeeHomePage/>}/>
+            <Route path="/employee/team-collab" element={<TeamCollaborationPage/>}/>
     </Routes>
   );
 }
