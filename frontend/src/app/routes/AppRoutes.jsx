@@ -33,8 +33,10 @@ import EmailSentPage from "../../features/Auth/pages/EmailSentPage";
 import ResetPasswordPage from "../../features/Auth/pages/ResetPasswordPage";
 import ResetPasswordSuccessPage from "../../features/Auth/pages/ResetPasswordSuccessPage";
 
+// Employee
 import EmployeeHomePage from "../../features/Employee/EmpDashboard";
 import LeavePlannerPage from "../../features/Employee/LeavePlannerModule/leavePlannerPage";
+import TeamCollaborationPage from "../../features/Employee/team-collab/pages/TeamCollaborationPage";
 
 function AppRoutes() {
   return (
@@ -70,6 +72,7 @@ function AppRoutes() {
 
       <Route path="/employee/home" element={<EmployeeHomePage />} />
       <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
+      <Route path="/employee/team-collab" element={<TeamCollaborationPage />} />
     </Routes>
   );
 }

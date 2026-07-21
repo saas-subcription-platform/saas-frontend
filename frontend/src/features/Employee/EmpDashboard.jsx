@@ -2,6 +2,7 @@ import EmployeeLayout from "../../components/common/layout/EmployeeLayout";
 import { useNavigate } from "react-router-dom";
 import { Clock3, CalendarDays, MessageSquare, Target } from "lucide-react";
 
+
 const DashboardPage = () => {
   const navigate = useNavigate();
   return (
@@ -27,7 +28,8 @@ const DashboardPage = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:shadow-xl transition">
+        
+        <div onClick={() =>navigate("/employee/team-collab")} className="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:shadow-xl transition">
           <MessageSquare size={40} className="text-purple-600 mb-4" />
           <h3 className="text-xl font-semibold">Team Collaboration</h3>
           <p className="text-gray-500 mt-2">
