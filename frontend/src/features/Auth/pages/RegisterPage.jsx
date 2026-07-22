@@ -1,9 +1,11 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
@@ -20,33 +22,34 @@ export default function RegisterPage() {
       !password ||
       !confirmPassword
     ) {
-      alert("Please fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
 
     if (password.length < 8) {
-      alert("Password must be at least 8 characters");
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
-    alert("Registration Successful (Frontend Demo)");
+    // Registration successful
+    toast.success("Account created successfully!");
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
   };
 
   return (
     <div className="min-h-screen bg-[#F4F7F3] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-
-       
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-4xl font-bold text-gray-800">
-            Create Account
-          </h2>
+          <h2 className="text-4xl font-bold text-gray-800">Create Account</h2>
 
           <p className="text-gray-500 mt-2">
             Start managing subscriptions today
@@ -55,7 +58,6 @@ export default function RegisterPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-
           {/* Company Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -166,21 +168,15 @@ export default function RegisterPage() {
               Login
             </Link>
           </p>
-
         </div>
 
         {/* Back Home */}
         <div className="text-center mt-6">
-          <Link
-            to="/"
-            className="text-gray-500 hover:text-[#7A9E7E]"
-          >
+          <Link to="/" className="text-gray-500 hover:text-[#7A9E7E]">
             Back to Home
           </Link>
         </div>
-
       </div>
     </div>
   );
 }
-
