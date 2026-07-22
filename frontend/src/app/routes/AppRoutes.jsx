@@ -37,6 +37,7 @@ import ResetPasswordSuccessPage from "../../features/Auth/pages/ResetPasswordSuc
 import EmployeeHomePage from "../../features/Employee/EmpDashboard";
 import LeavePlannerPage from "../../features/Employee/LeavePlannerModule/leavePlannerPage";
 import TeamCollaborationPage from "../../features/Employee/team-collab/pages/TeamCollaborationPage";
+import GoalsDashboardPage from "../../features/Employee/goals-okr/pages/GoalsDashboardPage";
 
 function AppRoutes() {
   return (
@@ -73,8 +74,12 @@ function AppRoutes() {
       <Route path="/employee/home" element={<EmployeeHomePage />} />
       <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
       <Route path="/employee/team-collab" element={<TeamCollaborationPage />} />
+      <Route path="/employee/goals" element={<GoalsDashboardPage />}
+/>
     </Routes>
   );
 }
 
 export default AppRoutes;
+
+
