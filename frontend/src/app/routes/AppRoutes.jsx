@@ -38,6 +38,9 @@ import EmployeeHomePage from "../../features/Employee/EmpDashboard";
 import LeavePlannerPage from "../../features/Employee/LeavePlannerModule/leavePlannerPage";
 import TeamCollaborationPage from "../../features/Employee/team-collab/pages/TeamCollaborationPage";
 import GoalsDashboardPage from "../../features/Employee/goals-okr/pages/GoalsDashboardPage";
+import MyTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/MyTimesheetPage";
+import CreateTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/CreateTimesheetPage";
+import ViewTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/ViewTimesheetPage";
 
 function AppRoutes() {
   return (
@@ -74,8 +77,11 @@ function AppRoutes() {
       <Route path="/employee/home" element={<EmployeeHomePage />} />
       <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
       <Route path="/employee/team-collab" element={<TeamCollaborationPage />} />
-      <Route path="/employee/goals" element={<GoalsDashboardPage />}
-/>
+      <Route path="/employee/goals" element={<GoalsDashboardPage />} />
+      <Route path="/employee/timesheet/history" element={<MyTimesheetPage />} />
+      <Route path="/employee/timesheet/create" element={<CreateTimesheetPage />} />
+      <Route path="/employee/timesheet/view/:id" element={<ViewTimesheetPage />} />
+     
     </Routes>
   );
 }

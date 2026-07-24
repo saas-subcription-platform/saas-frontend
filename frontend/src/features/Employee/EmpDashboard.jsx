@@ -8,12 +8,12 @@ const DashboardPage = () => {
   return (
     <EmployeeLayout>
       <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:shadow-xl transition">
+        <div onClick={() => navigate("/employee/timesheet/history")} className="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:shadow-xl transition">
           <Clock3 size={40} className="text-blue-600 mb-4" />
           <h3 className="text-xl font-semibold">Timesheets</h3>
           <p className="text-gray-500 mt-2">
             Submit and manage your daily work hours.
-          </p>
+          </p>  
         </div>
 
         <div
