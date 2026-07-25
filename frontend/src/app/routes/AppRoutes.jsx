@@ -79,8 +79,7 @@ function AppRoutes() {
       <Route path="/employee/timesheet/history" element={<MyTimesheetPage />} />
       <Route path="/employee/timesheet/create" element={<CreateTimesheetPage />} />
       <Route path="/employee/timesheet/view/:id" element={<ViewTimesheetPage />} />
-      <Route path="/employee/timesheet/edit/:id" element={<CreateTimesheetPage />}
-/>
+      <Route path="/employee/timesheet/edit/:id" element={<CreateTimesheetPage />} />
     </Routes>
   );
 }
