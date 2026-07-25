@@ -14,6 +14,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [username, setUsername] = useState("");
+
   const handleRegister = () => {
     if (
       !companyName ||
@@ -58,6 +60,21 @@ export default function RegisterPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          {/* Company user name */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Unique Username
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter unique username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
+            />
+          </div>
+
           {/* Company Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
