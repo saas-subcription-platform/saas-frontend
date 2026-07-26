@@ -71,12 +71,12 @@ const UsersPage = () => {
 
                 <div className="flex justify-between items-center">
                     <h1 className="text-4xl font-bold text-dark">
-                        User Management
+                        Employee Management
                     </h1>
 
-                    <button className="bg-primary text-white px-3 py-2 rounded-lg w-25"
+                    <button className="bg-primary text-white px-3 py-2 rounded-lg"
                             onClick={() => navigate("/admin/users/add")}>
-                        Add User
+                        Add Employee
                     </button>
                 </div>
 
