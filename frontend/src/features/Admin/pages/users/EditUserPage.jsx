@@ -34,7 +34,7 @@ const EditUserPage = () => {
             email: "amit@company.com",
             phone: "9123456789",
             department: "IT",
-            role: "Admin",
+            role: "Software Developer",
             status: "Active",
             joinDate: "15-Jan-2026"
         },
@@ -56,7 +56,7 @@ const EditUserPage = () => {
             email: "rohan@company.com",
             phone: "9988123456",
             department: "Finance",
-            role: "Employee",
+            role: "Accountant",
             status: "Active",
             joinDate: "25-Jan-2026"
         }
@@ -73,7 +73,7 @@ const EditUserPage = () => {
     if (!user) {
         return (
             <AdminLayout>
-                User not found
+                Employee not found
             </AdminLayout>
         )
     }
@@ -87,7 +87,7 @@ const EditUserPage = () => {
     const [status, setStatus] = useState(user.status);
 
     const handlesave = () => {
-        toast.success("User Edited Successfully");
+        toast.success("Employee Edited Successfully");
         navigate("/admin/users")
     }
 
@@ -97,7 +97,7 @@ const EditUserPage = () => {
 
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-4xl font-bold text-dark">
-                        Edit User
+                        Edit Employee
                     </h1>
 
                     <button className="bg-primary text-white px-4 py-2 rounded-lg"

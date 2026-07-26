@@ -70,7 +70,7 @@ const UserDetailsPage = () => {
     if (!user) {
         return (
             <AdminLayout>
-                <h1>User not found</h1>
+                <h1>Employee not found</h1>
             </AdminLayout>
         )
     }
@@ -80,7 +80,7 @@ const UserDetailsPage = () => {
             <div className="bg-white rounded-xl shadow-md p-8">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-4xl font-bold text-dark">
-                        User Details
+                        Employee Details
                     </h1>
 
                     <button className="bg-primary text-white px-4 py-2 rounded-lg"

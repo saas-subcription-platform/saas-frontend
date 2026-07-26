@@ -17,7 +17,7 @@ const AddUserPage = () => {
 
     const handleAddUser = () => {
 
-        toast.success("User Added Successfully");
+        toast.success("Employee Added Successfully");
 
         navigate("/admin/users");
     };
@@ -29,7 +29,7 @@ const AddUserPage = () => {
 
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-4xl font-bold text-dark">
-                        Add User
+                        Add Employee
                     </h1>
 
                     <button className="bg-primary text-white px-4 py-2 rounded-lg"
@@ -117,9 +117,11 @@ const AddUserPage = () => {
                                 onChange={(e) => setRole(e.target.value)}
                                 className="w-full border border-border p-3 rounded-lg"
                             >
-                                <option>Admin</option>
+                                <option>Accountant</option>
                                 <option>Manager</option>
-                                <option>Employee</option>
+                                <option>HR Executive</option>
+                                <option>Sales Executive</option>
+                                <option>Software Developer</option>
                             </select>
                         </div>
 
@@ -145,7 +147,7 @@ const AddUserPage = () => {
                             onClick={handleAddUser}
                             className="bg-primary text-white px-6 py-3 rounded-lg"
                         >
-                            Add User
+                            Add Employee
                         </button>
                     </div>
 
