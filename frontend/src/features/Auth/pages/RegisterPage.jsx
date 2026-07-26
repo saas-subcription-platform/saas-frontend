@@ -7,8 +7,9 @@ import { useNavigate } from "react-router-dom";
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
   const [companyName, setCompanyName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [password, setPassword] = useState("");
@@ -17,6 +18,8 @@ export default function RegisterPage() {
   const handleRegister = () => {
     if (
       !companyName ||
+      !firstName ||
+      !lastName ||
       !email ||
       !companySize ||
       !password ||
@@ -69,6 +72,36 @@ export default function RegisterPage() {
               placeholder="Enter company name"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
+            />
+          </div>
+
+          {/* admin first name */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Admin's First Name
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter first name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
+            />
+          </div>
+
+          {/* Admin Last Name */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Admin's Last Name
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
             />
           </div>
