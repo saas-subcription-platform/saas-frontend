@@ -37,13 +37,15 @@ const DashboardPage = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:shadow-xl transition">
+        <div onClick={() => navigate("/employee/goals")}className="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:shadow-xl transition">
           <Target size={40} className="text-red-600 mb-4" />
           <h3 className="text-xl font-semibold">Goals & OKRs</h3>
           <p className="text-gray-500 mt-2">
             Track your goals and key results.
-          </p>
-        </div>
+        </p>
+      </div>
+      
+      
       </div>
     </EmployeeLayout>
   );
