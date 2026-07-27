@@ -1,40 +1,91 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import api from "../../../api/api";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+
+  const token = searchParams.get("token");
+
+  const [loading, setLoading] = useState(false);
+  const [checkingToken, setCheckingToken] = useState(true);
 
   const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  useEffect(() => {
+    const validateToken = async () => {
+      if (!token) {
+        toast.error("Invalid password reset link.");
+        setCheckingToken(false);
+        navigate("/forgot-password");
+        return;
+      }
 
-  const handleReset = () => {
+      try {
+        await api.get(`/validate-reset-token?token=${token}`);
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "Invalid or expired reset link.",
+        );
 
-  if (!newPassword || !confirmPassword) {
-    alert("Please fill all fields");
-    return;
+        navigate("/forgot-password");
+      } finally {
+        setCheckingToken(false);
+      }
+    };
+
+    validateToken();
+  }, [token, navigate]);
+
+  const handleReset = async () => {
+    if (!newPassword || !confirmPassword) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await api.post("/reset-password", {
+        token,
+        newPassword,
+      });
+
+      toast.success("Password reset successfully.");
+      navigate("/password-reset-success");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to reset password.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (checkingToken) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500 text-lg">Checking reset link...</p>
+      </div>
+    );
   }
-
-  if (newPassword.length < 8) {
-    alert("Password must be at least 8 characters");
-    return;
-  }
-
-  if (newPassword !== confirmPassword) {
-    alert("Passwords do not match");
-    return;
-  }
-
-  navigate("/password-reset-success");
-};
-
   return (
     <div className="min-h-screen bg-[#F4F7F3] flex items-center justify-center px-4">
-
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-
         <h2 className="text-3xl font-bold text-center text-gray-800">
           Reset Password
         </h2>
@@ -45,13 +96,9 @@ export default function ResetPassword() {
 
         {/* New Password */}
         <div className="mb-4">
-
-          <label className="block text-sm font-medium mb-2">
-            New Password
-          </label>
+          <label className="block text-sm font-medium mb-2">New Password</label>
 
           <div className="relative">
-
             <input
               type={showPassword ? "text" : "password"}
               placeholder="New Password"
@@ -63,20 +110,15 @@ export default function ResetPassword() {
             <button
               type="button"
               className="absolute right-3 top-3"
-              onClick={() =>
-                setShowPassword(!showPassword)
-              }
+              onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff /> : <Eye />}
             </button>
-
           </div>
-
         </div>
 
         {/* Confirm Password */}
         <div>
-
           <label className="block text-sm font-medium mb-2">
             Confirm Password
           </label>
@@ -85,23 +127,19 @@ export default function ResetPassword() {
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword}
-            onChange={(e) =>
-              setConfirmPassword(e.target.value)
-            }
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg"
           />
-
         </div>
 
         <button
           onClick={handleReset}
-          className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6"
+          disabled={loading}
+          className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] disabled:opacity-50 text-white py-3 rounded-lg mt-6"
         >
-          Reset Password
+          {loading ? "Resetting..." : "Reset Password"}
         </button>
-
       </div>
-
     </div>
   );
 }
