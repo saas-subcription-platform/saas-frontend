@@ -48,8 +48,6 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/checkout" element={<PlanConfigurationPage />} />
-      <Route path="/payment" element={<CheckoutPage />} />
-      <Route path="/payment-success" element={<PaymentSuccessPage />} />
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -63,6 +61,8 @@ function AppRoutes() {
 
       {/* Protected Admin Routes */}
       <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+        <Route path="/payment" element={<CheckoutPage />} />
+        <Route path="/payment-success" element={<PaymentSuccessPage />} />
         <Route path="/admin/home" element={<AdminHomePage />} />
         <Route path="/admin/dashboard" element={<DashboardPage />} />
         <Route path="/admin/subscriptions" element={<SubscriptionsPage />} />
@@ -82,31 +82,31 @@ function AppRoutes() {
 
       {/* Protected Employee Routes */}
       {/* Protected Employee Routes */}
-<Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
-  <Route path="/employee/home" element={<EmployeeHomePage />} />
-  <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
-  <Route
-    path="/employee/team-collab"
-    element={<TeamCollaborationPage />}
-  />
-  <Route path="/employee/goals" element={<GoalsDashboardPage />} />
-  <Route
-    path="/employee/timesheet/history"
-    element={<MyTimesheetPage />}
-  />
-  <Route
-    path="/employee/timesheet/create"
-    element={<CreateTimesheetPage />}
-  />
-  <Route
-    path="/employee/timesheet/view/:id"
-    element={<ViewTimesheetPage />}
-  />
-  <Route
-    path="/employee/timesheet/edit/:id"
-    element={<CreateTimesheetPage />}
-  />
-</Route>
+      <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
+        <Route path="/employee/home" element={<EmployeeHomePage />} />
+        <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
+        <Route
+          path="/employee/team-collab"
+          element={<TeamCollaborationPage />}
+        />
+        <Route path="/employee/goals" element={<GoalsDashboardPage />} />
+        <Route
+          path="/employee/timesheet/history"
+          element={<MyTimesheetPage />}
+        />
+        <Route
+          path="/employee/timesheet/create"
+          element={<CreateTimesheetPage />}
+        />
+        <Route
+          path="/employee/timesheet/view/:id"
+          element={<ViewTimesheetPage />}
+        />
+        <Route
+          path="/employee/timesheet/edit/:id"
+          element={<CreateTimesheetPage />}
+        />
+      </Route>
     </Routes>
   );
 }

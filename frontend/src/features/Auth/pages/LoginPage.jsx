@@ -1,12 +1,18 @@
+
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
+
 import { toast } from "react-toastify";
 import { login } from "../services/authService";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectTo = location.state?.redirectTo || null;
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,14 +45,21 @@ export default function Login() {
       });
 
       console.log(response);
-      
+      console.log("Login Response:", response);
+      console.log("Token:", response.token);
+      console.log("Role:", response.role);
 
       localStorage.setItem("token", response.token);
       localStorage.setItem("role", response.role);
 
       toast.success("Login successful!");
 
-      if (response.role === "ADMIN") {
+      console.log("Location State:", location.state);
+      console.log("Redirect To:", redirectTo);
+
+      if (redirectTo) {
+        navigate(redirectTo);
+      } else if (response.role === "ADMIN") {
         navigate("/admin/home");
       } else {
         navigate("/employee/home");
