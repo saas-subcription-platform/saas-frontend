@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
@@ -10,6 +11,33 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (!token) return;
+
+  try {
+    const decoded = jwtDecode(token);
+
+    if (decoded.exp * 1000 > Date.now()) {
+      if (role === "ADMIN") {
+        navigate("/admin/home", { replace: true });
+      } else if (role === "EMPLOYEE") {
+        navigate("/employee/home", { replace: true });
+      }
+    } else {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      navigate("/login", { replace: true });
+    }
+  } catch (e) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login", { replace: true });
+  }
+}, [navigate]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -26,7 +54,6 @@ export default function Login() {
       });
 
       console.log(response);
-      
 
       localStorage.setItem("token", response.token);
       localStorage.setItem("role", response.role);
