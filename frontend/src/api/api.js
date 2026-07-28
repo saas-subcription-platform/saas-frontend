@@ -5,14 +5,25 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
 
-    const token = localStorage.getItem("token");
+  const publicEndpoints = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+    "/validate-reset-token",
+  ];
 
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
+  const isPublic = publicEndpoints.some(endpoint =>
+    config.url?.includes(endpoint)
+  );
 
-    return config;
+  if (token && !isPublic) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
 });
 
 api.interceptors.response.use(
