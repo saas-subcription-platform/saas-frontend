@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { register } from "../services/authService";
 
 export default function RegisterPage() {
@@ -15,7 +15,6 @@ export default function RegisterPage() {
   const [companySize, setCompanySize] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
 
   const handleRegister = async () => {
     if (
@@ -55,7 +54,9 @@ export default function RegisterPage() {
 
       toast.success("Account created successfully!");
 
-      navigate("/login");
+      navigate("/login", {
+        state: location.state,
+      });
     } catch (error) {
       const message =
         error.response?.data?.message ||

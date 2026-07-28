@@ -1,27 +1,28 @@
 import { Check } from "lucide-react";
 
-const PricingCard = ({
-    title,
-    price,
-    description,
-    features,
-    popular = false,
-    onSelect,
-}) =>{
-    return (
-        <div
+const PricingCard = ({ plan, onSelect }) => {
+  // Default to Monthly pricing
+  const monthlyPricing = plan.pricingOptions?.find(
+    (pricing) => pricing.billingCycle === "MONTHLY"
+  );
+
+  // Highlight Professional plan
+  const isPopular = plan.planName === "Professional";
+
+  return (
+    <div
       className={`
         relative bg-white rounded-2xl border
         p-8 transition-all duration-300
         hover:shadow-xl
         ${
-          popular
+          isPopular
             ? "border-primary shadow-lg scale-105"
             : "border-border"
         }
       `}
     >
-      {popular && (
+      {isPopular && (
         <span
           className="
             absolute -top-4 left-1/2 -translate-x-1/2
@@ -35,47 +36,52 @@ const PricingCard = ({
 
       <div className="text-center">
         <h3 className="text-2xl font-bold text-dark">
-          {title}
+          {plan.planName}
         </h3>
 
         <div className="mt-6">
           <span className="text-5xl font-bold text-dark">
-            {price}
+            ₹{monthlyPricing?.price}
           </span>
 
-          {price !== "Custom" && (
-            <span className="text-dark/60 ml-1">
-              /month
-            </span>
-          )}
+          <span className="text-dark/60 ml-1">
+            /month
+          </span>
         </div>
 
         <p className="mt-4 text-dark/70">
-          {description}
+          {plan.planDescription}
+        </p>
+
+        <p className="mt-2 text-sm font-medium text-primary">
+          Up to {plan.maximumUsers} Users
         </p>
       </div>
 
       <ul className="mt-8 space-y-4">
-        {features.map((feature) => (
+        {plan.features?.map((feature) => (
           <li
-            key={feature}
+            key={feature.id}
             className="flex items-center gap-3"
           >
             <Check
               size={18}
-              className="text-primary"
+              className="text-primary flex-shrink-0"
             />
 
             <span className="text-dark">
-              {feature}
+              {feature.featureName}
             </span>
           </li>
         ))}
       </ul>
 
-      <button onClick={onSelect} className={` w-full mt-8 py-3 rounded-xl font-medium transition-all duration-300
+      <button
+        onClick={onSelect}
+        className={`
+          w-full mt-8 py-3 rounded-xl font-medium transition-all duration-300
           ${
-            popular
+            isPopular
               ? "bg-primary text-white hover:bg-primary-hover"
               : "border border-border text-dark hover:bg-background"
           }
@@ -84,7 +90,7 @@ const PricingCard = ({
         Get Started
       </button>
     </div>
-    );
-}
+  );
+};
 
 export default PricingCard;
