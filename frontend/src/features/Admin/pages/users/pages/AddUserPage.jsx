@@ -1,9 +1,10 @@
 import AdminLayout from "../../../../../components/common/layout/AdminLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { addUser } from "../services/userService";
+import { getCompanyProfile } from "../../../../Auth/Services/companyService";
 
 const AddUserPage = () => {
   const navigate = useNavigate();
@@ -17,13 +18,49 @@ const AddUserPage = () => {
   const [role, setRole] = useState("EMPLOYEE");
   const [status, setStatus] = useState("ACTIVE");
 
+  const [companyId, setCompanyId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Fetch companyId on component mount
+  useEffect(() => {
+    const fetchCompanyData = async () => {
+      try {
+        const companyData = await getCompanyProfile();
+
+        console.log("=== FETCHED COMPANY DATA ===", companyData);
+
+        // Check common ID field names or extract from nested user object
+        // 1. Updated line below to extract company_id correctly:
+        const companyId =
+          companyData?.company_id || companyData?.companyId || companyData?.id;
+
+        console.log("Extracted Company ID:", companyId);
+        if (!companyId) {
+          toast.error("Company details not loaded yet. Please try again.");
+          return;
+        }
+        setCompanyId(companyId);
+      } catch (error) {
+        console.error("Failed to fetch company profile:", error);
+        toast.error("Could not load company details");
+      }
+    };
+
+    fetchCompanyData();
+  }, []);
+
   const handleAddUser = async () => {
+    // Basic validation check for companyId
+    if (!companyId) {
+      toast.error("Company details not loaded yet. Please try again.");
+      return;
+    }
+
     try {
       setLoading(true);
 
-      const userData = {
+      // Build payload using your state variables directly
+      const payload = {
         firstName,
         lastName,
         email,
@@ -32,16 +69,16 @@ const AddUserPage = () => {
         department,
         role,
         status,
+        companyId: Number(companyId),
       };
 
-      console.log("========== USER DATA ==========");
-      console.log(userData);
-      console.log("===============================");
+      console.log("========== USER DATA SENT ==========");
+      console.log(payload);
+      console.log("====================================");
 
-      await addUser(userData);
+      await addUser(payload);
 
       toast.success("Employee Added Successfully");
-
       navigate("/admin/users");
     } catch (error) {
       console.error("Add User Error:", error);
@@ -75,7 +112,6 @@ const AddUserPage = () => {
           <div className="grid grid-cols-2 gap-6">
             <div>
               <label className="block mb-2 font-medium">First Name</label>
-
               <input
                 type="text"
                 value={firstName}
@@ -86,7 +122,6 @@ const AddUserPage = () => {
 
             <div>
               <label className="block mb-2 font-medium">Last Name</label>
-
               <input
                 type="text"
                 value={lastName}
@@ -97,7 +132,6 @@ const AddUserPage = () => {
 
             <div>
               <label className="block mb-2 font-medium">Email</label>
-
               <input
                 type="email"
                 value={email}
@@ -108,7 +142,6 @@ const AddUserPage = () => {
 
             <div>
               <label className="block mb-2 font-medium">Password</label>
-
               <input
                 type="password"
                 value={password}
@@ -119,7 +152,6 @@ const AddUserPage = () => {
 
             <div>
               <label className="block mb-2 font-medium">Phone</label>
-
               <input
                 type="text"
                 value={phone}
@@ -130,7 +162,6 @@ const AddUserPage = () => {
 
             <div>
               <label className="block mb-2 font-medium">Department</label>
-
               <input
                 type="text"
                 value={department}
@@ -141,7 +172,6 @@ const AddUserPage = () => {
 
             <div>
               <label className="block mb-2 font-medium">Role</label>
-
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -156,7 +186,6 @@ const AddUserPage = () => {
 
             <div>
               <label className="block mb-2 font-medium">Status</label>
-
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
