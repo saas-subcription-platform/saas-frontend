@@ -1,35 +1,76 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { PRICING_PLANS } from "../constants/pricing.constants";
-import { useState } from "react";
+
+import { useEffect, useMemo, useState } from "react";
+import { getSubscriptionPlanById } from "../../../subscription/services/subscriptionPlanService";
 import { ArrowLeft } from "lucide-react";
 
 const PlanConfigurationPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const planId = searchParams.get("plan") || "starter";
+  const planId = searchParams.get("plan");
 
-  const targetPlan =
-    PRICING_PLANS.find((p) => p.id === planId) || PRICING_PLANS[0];
+  const [targetPlan, setTargetPlan] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [isYearly, setIsYearly] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState("card");
 
-  const cleanPriceStr = String(targetPlan?.price || "0").replace(
-    /[^0-9.]/g,
-    ""
-  );
+  useEffect(() => {
+    const loadPlan = async () => {
+      try {
+        setLoading(true);
 
-  const cleanDiscountStr = String(targetPlan?.discount || "0").replace(
-    /[^0-9.]/g,
-    ""
-  );
+        const data = await getSubscriptionPlanById(planId);
 
-  const basePrice = parseFloat(cleanPriceStr) || 0;
-  const discount = parseFloat(cleanDiscountStr) || 0;
+        setTargetPlan(data);
+      } catch (err) {
+        console.error(err);
+        setError("Unable to load subscription plan.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const monthlyPrice = basePrice - discount;
-  const yearlyPrice = monthlyPrice * 12;
+    if (planId) {
+      loadPlan();
+    }
+  }, [planId]);
+
+  const monthlyPricing = useMemo(() => {
+    return targetPlan?.pricingOptions?.find(
+      (pricing) => pricing.billingCycle === "MONTHLY",
+    );
+  }, [targetPlan]);
+
+  const yearlyPricing = useMemo(() => {
+    return targetPlan?.pricingOptions?.find(
+      (pricing) => pricing.billingCycle === "YEARLY",
+    );
+  }, [targetPlan]);
+
+  const selectedPrice = isYearly
+    ? (yearlyPricing?.price ?? 0)
+    : (monthlyPricing?.price ?? 0);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <h2 className="text-xl font-semibold">Loading subscription plan...</h2>
+      </div>
+    );
+  }
+
+  if (error || !targetPlan) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <h2 className="text-xl font-semibold text-red-500">
+          {error || "Subscription plan not found."}
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-dark p-6 md:p-12">
@@ -44,7 +85,7 @@ const PlanConfigurationPage = () => {
           </button>
 
           <h1 className="text-3xl md:text-4xl font-black text-center flex-1 tracking-wide text-primary uppercase">
-            {targetPlan.title} Plan
+            {targetPlan.planName} Plan
           </h1>
 
           <div className="w-10"></div>
@@ -57,24 +98,23 @@ const PlanConfigurationPage = () => {
             {/* Company Plan Card */}
             <div className="bg-white border border-border rounded-2xl p-6 shadow-sm">
               <h2 className="text-2xl font-bold mb-2">
-                {targetPlan.title} Plan
+                {targetPlan.planName} Plan
               </h2>
 
               <p className="text-dark/70">
-                Includes access for up to 100 users in your organization.
+                Includes access for up to {targetPlan.maximumUsers} users in
+                your organization.
               </p>
             </div>
 
             {/* Features */}
             <div>
-              <h3 className="text-xl font-bold mb-6">
-                Included Features
-              </h3>
+              <h3 className="text-xl font-bold mb-6">Included Features</h3>
 
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {targetPlan.features?.map((feature) => (
                   <li
-                    key={feature}
+                    key={feature.featureName}
                     className="flex items-center gap-3 p-4 bg-white border border-border rounded-xl shadow-sm"
                   >
                     <div className="flex items-center justify-center w-6 h-6 bg-primary/10 rounded-full text-primary shrink-0">
@@ -94,9 +134,12 @@ const PlanConfigurationPage = () => {
                       </svg>
                     </div>
 
-                    <span className="font-medium text-dark">
-                      {feature}
-                    </span>
+                    <div>
+                      <p className="font-medium">{feature.featureName}</p>
+                      <p className="text-sm text-dark/60">
+                        {feature.featureDescription}
+                      </p>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -139,25 +182,18 @@ const PlanConfigurationPage = () => {
             <div className="space-y-4 border-b border-border pb-6">
               <div>
                 <h3 className="text-lg font-bold">
-                  {targetPlan.title} Plan
+                  {targetPlan.planName} Plan
                 </h3>
 
                 <p className="text-sm text-dark/60 mt-1">
-                  Includes up to 100 users
+                  Includes up to {targetPlan.maximumUsers} users
                 </p>
               </div>
 
               <div className="flex justify-between items-center">
                 <span>Subscription Price</span>
-                <span>₹{basePrice.toFixed(2)}</span>
+                <span>₹{selectedPrice.toLocaleString("en-IN")}</span>
               </div>
-
-              {discount > 0 && (
-                <div className="flex justify-between items-center text-primary font-semibold">
-                  <span>Discount</span>
-                  <span>-₹{discount.toFixed(2)}</span>
-                </div>
-              )}
             </div>
 
             {/* Total */}
@@ -168,10 +204,7 @@ const PlanConfigurationPage = () => {
                 </span>
 
                 <span className="text-3xl font-black text-dark">
-                  ₹
-                  {isYearly
-                    ? yearlyPrice.toFixed(2)
-                    : monthlyPrice.toFixed(2)}
+                  ₹{selectedPrice.toLocaleString("en-IN")}
                 </span>
               </div>
 
@@ -181,30 +214,68 @@ const PlanConfigurationPage = () => {
                 </p>
               )}
 
-             
-
               {/* Action Buttons */}
               <div className="space-y-3 pt-8">
+                {/*
                 <button
                   onClick={() => {
                     const params = new URLSearchParams({
-                      title: targetPlan.title,
-                      amount: (
-                        isYearly ? yearlyPrice : monthlyPrice
-                      ).toString(),
-                      billing: isYearly ? "yearly" : "monthly",
-                      paymentMethod,
+                      plan: targetPlan.id,
+                      billing: isYearly ? "YEARLY" : "MONTHLY",
                     });
 
-                    navigate(`/payment?${params.toString()}`);
+                    const redirectTo = `/payment?${params.toString()}`;
+
+                    const token = localStorage.getItem("token");
+
+                    console.log("Token:", token);
+
+                    if (token) {
+                      console.log("Navigating to payment");
+                      navigate(redirectTo);
+                    } else {
+                      console.log("Navigating to login");
+                      navigate("/login", {
+                        state: {
+                          redirectTo,
+                        },
+                      });
+                    }
+                  }}
+
+                  className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-bold tracking-wide transition shadow-md"
+                >
+                  Buy Now
+                </button> */}
+                <button
+                  onClick={() => {
+                    const params = new URLSearchParams({
+                      plan: targetPlan.id,
+                      billing: isYearly ? "YEARLY" : "MONTHLY",
+                    });
+
+                    const redirectTo = `/payment?${params.toString()}`;
+
+                    const token = localStorage.getItem("token");
+
+                    console.log("Token =", token);
+                    console.log("typeof =", typeof token);
+                    console.log("token === null", token === null);
+                    console.log("Boolean(token) =", Boolean(token));
+
+                    if (token) {
+                      console.log("Inside IF");
+                      navigate(redirectTo);
+                    } else {
+                      console.log("Inside ELSE");
+                      navigate("/login", {
+                        state: { redirectTo },
+                      });
+                    }
                   }}
                   className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-bold tracking-wide transition shadow-md"
                 >
                   Buy Now
-                </button>
-
-                <button className="w-full bg-background border border-border hover:bg-dark/5 text-dark py-3 rounded-xl font-semibold transition">
-                  Send / Print Quote
                 </button>
               </div>
             </div>

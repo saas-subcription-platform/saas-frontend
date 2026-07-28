@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { register } from "../services/authService";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -15,9 +16,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [username, setUsername] = useState("");
-
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (
       !companyName ||
       !firstName ||
@@ -41,12 +40,31 @@ export default function RegisterPage() {
       return;
     }
 
-    // Registration successful
-    toast.success("Account created successfully!");
+    const registerData = {
+      companyName,
+      firstName,
+      lastName,
+      email,
+      companySize,
+      password,
+    };
 
-    setTimeout(() => {
-      navigate("/login");
-    }, 1500);
+    try {
+      await register(registerData);
+
+      toast.success("Account created successfully!");
+
+      navigate("/login", {
+        state: location.state,
+      });
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.response?.data ||
+        "Registration failed";
+
+      toast.error(message);
+    }
   };
 
   return (
@@ -63,21 +81,6 @@ export default function RegisterPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-          {/* Company user name */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Unique Username
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter unique username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
-            />
-          </div>
-
           {/* Company Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -150,12 +153,18 @@ export default function RegisterPage() {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
             >
               <option value="">Select Company Size</option>
-              <option value="1-10">1-10 Employees</option>
-              <option value="11-50">11-50 Employees</option>
-              <option value="51-200">51-200 Employees</option>
-              <option value="201-500">201-500 Employees</option>
-              <option value="501-1000">501-1000 Employees</option>
-              <option value="1000+">1000+ Employees</option>
+
+              <option value="ONE_TO_TEN">1-10 Employees</option>
+
+              <option value="ELEVEN_TO_FIFTY">11-50 Employees</option>
+
+              <option value="FIFTY_ONE_TO_TWO_HUNDRED">51-200 Employees</option>
+
+              <option value="TWO_HUNDRED_ONE_TO_FIVE_HUNDRED">
+                201-500 Employees
+              </option>
+
+              <option value="FIVE_HUNDRED_PLUS">500+ Employees</option>
             </select>
           </div>
 

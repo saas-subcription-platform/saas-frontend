@@ -1,11 +1,19 @@
 import { Bell } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../../features/Auth/services/authService";
+
 
 const EmployeeTopBar = () => {
 
     const [showMenu, setShowMenu] = useState(false);
     const navigate = useNavigate();
+
+      const handleLogout = () => {
+        logout();
+        navigate("/login", { replace: true });
+      };
+    
 
     return (
         <header className="h-20 bg-white border-b border-border shadow-sm px-8 flex items-center justify-between">
@@ -45,7 +53,7 @@ const EmployeeTopBar = () => {
 
                             <button
                                 className="w-full text-left px-4 py-3 hover:bg-background"
-                                onClick={() => navigate("/login")}
+                                onClick={handleLogout}
                             >
                                 Logout
                             </button>
