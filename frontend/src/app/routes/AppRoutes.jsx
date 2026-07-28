@@ -44,6 +44,9 @@ import MyTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/MyT
 import CreateTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/CreateTimesheetPage";
 import ViewTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/ViewTimesheetPage";
 
+//payment 
+import RazorpayTestPage from "../../paymentManagement/pages/RazorpayTestPage";
+
 function AppRoutes() {
   return (
     <Routes>
@@ -60,6 +63,12 @@ function AppRoutes() {
       <Route
         path="/password-reset-success"
         element={<ResetPasswordSuccessPage />}
+      />
+
+      {/* Temp public route for testing */}
+      <Route
+        path="/razorpay-test"
+        element={<RazorpayTestPage />}
       />
 
       {/* Protected Admin Routes */}
@@ -84,31 +93,31 @@ function AppRoutes() {
 
       {/* Protected Employee Routes */}
       {/* Protected Employee Routes */}
-<Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
-  <Route path="/employee/home" element={<EmployeeHomePage />} />
-  <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
-  <Route
-    path="/employee/team-collab"
-    element={<TeamCollaborationPage />}
-  />
-  <Route path="/employee/goals" element={<GoalsDashboardPage />} />
-  <Route
-    path="/employee/timesheet/history"
-    element={<MyTimesheetPage />}
-  />
-  <Route
-    path="/employee/timesheet/create"
-    element={<CreateTimesheetPage />}
-  />
-  <Route
-    path="/employee/timesheet/view/:id"
-    element={<ViewTimesheetPage />}
-  />
-  <Route
-    path="/employee/timesheet/edit/:id"
-    element={<CreateTimesheetPage />}
-  />
-</Route>
+      <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
+        <Route path="/employee/home" element={<EmployeeHomePage />} />
+        <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
+        <Route
+          path="/employee/team-collab"
+          element={<TeamCollaborationPage />}
+        />
+        <Route path="/employee/goals" element={<GoalsDashboardPage />} />
+        <Route
+          path="/employee/timesheet/history"
+          element={<MyTimesheetPage />}
+        />
+        <Route
+          path="/employee/timesheet/create"
+          element={<CreateTimesheetPage />}
+        />
+        <Route
+          path="/employee/timesheet/view/:id"
+          element={<ViewTimesheetPage />}
+        />
+        <Route
+          path="/employee/timesheet/edit/:id"
+          element={<CreateTimesheetPage />}
+        />
+      </Route>
     </Routes>
   );
 }
