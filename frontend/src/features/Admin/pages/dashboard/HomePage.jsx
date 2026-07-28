@@ -2,26 +2,38 @@ import AdminLayout from "../../../../components/common/layout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getDashboardDetails } from "../../../Auth/Services/companyService";
+import { getMySubscription } from "../../../../subscription/services/subscriptionService";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [subscription, setSubscription] = useState(null);
+  const [loadingSubscription, setLoadingSubscription] = useState(true);
+
   const [dashboard, setDashboard] = useState({
     adminName: "",
     companyName: "",
   });
 
   useEffect(() => {
-  const fetchDashboard = async () => {
-    try {
-      const data = await getDashboardDetails();
-      setDashboard(data);
-    } catch (error) {
-      console.error("Error fetching dashboard details:", error);
-    }
-  };
+    const fetchDashboard = async () => {
+      try {
+        const [dashboardData, subscriptionData] = await Promise.all([
+          getDashboardDetails(),
+          getMySubscription(),
+        ]);
 
-  fetchDashboard();
-}, []);
+        setDashboard(dashboardData);
+        setSubscription(subscriptionData);
+      } catch (error) {
+        console.error("Error fetching dashboard details:", error);
+      } finally {
+        setLoadingSubscription(false);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
+
   return (
     <AdminLayout>
       {/* welcome */}
@@ -66,41 +78,59 @@ const HomePage = () => {
               Subscription Overview
             </h2>
 
-            <div className="space-y-3">
-              <p>
-                <strong>Current Plan:</strong> Professional
+            {loadingSubscription ? (
+              <p className="text-dark/70">Loading subscription...</p>
+            ) : subscription ? (
+              <>
+                <div className="space-y-3">
+                  <p>
+                    <strong>Current Plan:</strong> {subscription.planName}
+                  </p>
+
+                  <p>
+                    <strong>Price:</strong> ₹{subscription.amount}
+                  </p>
+
+                  <p>
+                    <strong>Renewal Date:</strong> {subscription.renewalDate}
+                  </p>
+
+                  <p>
+                    <strong>Status:</strong>
+
+                    <span
+                      className={`ml-2 font-semibold ${
+                        subscription.status === "ACTIVE"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {subscription.status}
+                    </span>
+                  </p>
+
+                  <p>
+                    <strong>Maximum Users:</strong> {subscription.maximumUsers}
+                  </p>
+                </div>
+
+                <div className="mt-6">
+                  <h3 className="font-semibold text-dark mb-3">
+                    Included Features
+                  </h3>
+
+                  <ul className="space-y-2 text-dark/80">
+                    {subscription.features?.map((feature) => (
+                      <li key={feature}>✓ {feature}</li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <p className="text-red-500">
+                Subscription details not available.
               </p>
-
-              <p>
-                <strong>Price:</strong> ₹2999/month
-              </p>
-
-              <p>
-                <strong>Renewal Date:</strong> 30-Jun-2026
-              </p>
-
-              <p>
-                <strong>Status:</strong>
-
-                <span className="ml-2 text-green-600 font-semibold">
-                  Active
-                </span>
-              </p>
-            </div>
-
-            <div className="mt-6">
-              <h3 className="font-semibold text-dark mb-3">
-                Included Features
-              </h3>
-
-              <ul className="space-y-2 text-dark/80">
-                <li>✓ User Management</li>
-                <li>✓ Subscription Tracking</li>
-                <li>✓ Billing Management</li>
-                <li>✓ Analytics Dashboard</li>
-                <li>✓ Priority Support</li>
-              </ul>
-            </div>
+            )}
           </div>
 
           {/* notification */}
