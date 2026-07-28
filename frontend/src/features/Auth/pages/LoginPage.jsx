@@ -1,6 +1,9 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
+
 import { toast } from "react-toastify";
 import { login } from "../services/authService";
 
@@ -13,6 +16,19 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (token) {
+    if (role === "ADMIN") {
+      navigate("/admin/home", { replace: true });
+    } else if (role === "USER") {
+      navigate("/employee/home", { replace: true });
+    }
+  }
+}, [navigate]);
 
   const handleLogin = async () => {
     if (!email || !password) {

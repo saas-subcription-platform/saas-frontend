@@ -33,14 +33,7 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen bg-[#F4F7F3] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-12 h-12 bg-[#7A9E7E] rounded-xl flex items-center justify-center text-white font-bold text-lg">
-            SM
-          </div>
-
-          <h1 className="text-3xl font-bold text-gray-800">SubsManager</h1>
-        </div>
+        
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8">

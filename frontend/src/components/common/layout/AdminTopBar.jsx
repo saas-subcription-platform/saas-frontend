@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logout } from "../../../features/Auth/services/authService";
 
-const AdminTopBar = () => {
+const AdminTopBar = ({ adminName }) => {
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
@@ -34,10 +34,16 @@ const AdminTopBar = () => {
           onClick={() => setShowMenu(!showMenu)}
         >
           <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
-            JD
+            {adminName
+              ? adminName
+                  .split(" ")
+                  .map((name) => name[0])
+                  .join("")
+                  .toUpperCase()
+              : ""}
           </div>
 
-          <span>John Doe</span>
+          <span>{adminName}</span>
           {showMenu && (
             <div className="absolute top-12 right-0 bg-white border border-border rounded-lg shadow-lg w-40 z-50">
               <button
