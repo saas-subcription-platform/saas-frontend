@@ -7,6 +7,7 @@ export default function Payments() {
 
   const [transactions, setTransactions] = useState([]);
   const [company, setCompany] = useState(null);
+  const [subscription, setSubscription] = useState(null);
 
   useEffect(() => {
 
