@@ -1,43 +1,47 @@
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
+
 import { toast } from "react-toastify";
 import { login } from "../services/authService";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectTo = location.state?.redirectTo || null;
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
-  if (!token) return;
+    if (!token) return;
 
-  try {
-    const decoded = jwtDecode(token);
+    try {
+      const decoded = jwtDecode(token);
 
-    if (decoded.exp * 1000 > Date.now()) {
-      if (role === "ADMIN") {
-        navigate("/admin/home", { replace: true });
-      } else if (role === "EMPLOYEE") {
-        navigate("/employee/home", { replace: true });
+      if (decoded.exp * 1000 > Date.now()) {
+        if (role === "ADMIN") {
+          navigate("/admin/home", { replace: true });
+        } else if (role === "EMPLOYEE") {
+          navigate("/employee/home", { replace: true });
+        }
+      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        navigate("/login", { replace: true });
       }
-    } else {
+    } catch (error) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       navigate("/login", { replace: true });
     }
-  } catch (e) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/login", { replace: true });
-  }
-}, [navigate]);
+  }, [navigate]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -53,17 +57,24 @@ export default function Login() {
         password,
       });
 
-      console.log(response);
+      console.log("Login Response:", response);
+      console.log("Token:", response.token);
+      console.log("Role:", response.role);
 
       localStorage.setItem("token", response.token);
       localStorage.setItem("role", response.role);
 
       toast.success("Login successful!");
 
-      if (response.role === "ADMIN") {
-        navigate("/admin/home");
-      } else {
-        navigate("/employee/home");
+      console.log("Location State:", location.state);
+      console.log("Redirect To:", redirectTo);
+
+      if (redirectTo) {
+        navigate(redirectTo, { replace: true });
+      } else if (response.role === "ADMIN") {
+        navigate("/admin/home", { replace: true });
+      } else if (response.role === "EMPLOYEE") {
+        navigate("/employee/home", { replace: true });
       }
     } catch (error) {
       setPassword("");
