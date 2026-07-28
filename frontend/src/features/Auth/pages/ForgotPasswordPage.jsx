@@ -1,38 +1,49 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import api from "../../../api/api";
+import { toast } from "react-toastify";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    if (!email) {
-      alert("Please enter your email address");
+  const handleSubmit = async () => {
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
       return;
     }
 
-    navigate("/email-sent");
+    try {
+      setLoading(true);
+
+      await api.post("/forgot-password", {
+        email,
+      });
+
+      navigate("/email-sent");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#F4F7F3] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
           <div className="w-12 h-12 bg-[#7A9E7E] rounded-xl flex items-center justify-center text-white font-bold text-lg">
             SM
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-800">
-            SubsManager
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-800">SubsManager</h1>
         </div>
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
-
           <h2 className="text-3xl font-bold text-center text-gray-800">
             Forgot Password
           </h2>
@@ -48,10 +59,7 @@ export default function ForgotPassword() {
             </label>
 
             <div className="relative">
-              <Mail
-                size={18}
-                className="absolute left-3 top-4 text-gray-400"
-              />
+              <Mail size={18} className="absolute left-3 top-4 text-gray-400" />
 
               <input
                 type="email"
@@ -66,9 +74,10 @@ export default function ForgotPassword() {
           {/* Button */}
           <button
             onClick={handleSubmit}
-            className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6"
+            disabled={loading}
+            className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] disabled:opacity-50 text-white py-3 rounded-lg mt-6"
           >
-            Send Reset Link
+            {loading ? "Sending..." : "Send Reset Link"}
           </button>
 
           {/* Back */}
@@ -81,7 +90,6 @@ export default function ForgotPassword() {
               Back to Login
             </Link>
           </div>
-
         </div>
       </div>
     </div>

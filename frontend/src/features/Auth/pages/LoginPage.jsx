@@ -1,19 +1,63 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
-// import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { login } from "../services/authService";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Please enter email and password");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await login({
+        email,
+        password,
+      });
+
+      console.log(response);
+      
+
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("role", response.role);
+
+      toast.success("Login successful!");
+
+      if (response.role === "ADMIN") {
+        navigate("/admin/home");
+      } else {
+        navigate("/employee/home");
+      }
+    } catch (error) {
+      setPassword("");
+
+      const message =
+        error.response?.data?.message ||
+        error.response?.data ||
+        "Invalid email or password";
+
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F4F7F3] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-      
-
         {/* Welcome Section */}
         <div className="text-center mb-6">
-          <h2 className="text-4xl font-bold text-gray-800">Login</h2>
+          {/* <h2 className="text-4xl font-bold text-gray-800">Login</h2> */}
 
           <p className="text-gray-500 mt-2">
             Sign in to continue managing subscriptions
@@ -22,9 +66,7 @@ export default function Login() {
 
         {/* Login Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-          <h3 className="text-xl font-semibold text-gray-800 mb-6">
-            Login
-          </h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-6">Login</h3>
 
           {/* Email */}
           <div className="mb-5">
@@ -35,6 +77,8 @@ export default function Login() {
             <input
               type="email"
               placeholder="john@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
             />
           </div>
@@ -58,6 +102,8 @@ export default function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
               />
 
@@ -72,22 +118,30 @@ export default function Login() {
           </div>
 
           {/* Login Button */}
-          {/* Login Button */}
-<Link
-  to="/admin/home"
-  className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6 flex items-center justify-center gap-2 transition"
->
-  Sign In
-  <ArrowRight size={18} />
-</Link>
+          {/* <Link
+            to="/admin/home"
+            className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6 flex items-center justify-center gap-2 transition"
+          >
+            Sign In
+            <ArrowRight size={18} />
+          </Link>
 
-<Link
-  to="/employee/home"
-  className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6 flex items-center justify-center gap-2 transition"
->
-  Sign In (Employee)
-  <ArrowRight size={18} />
-</Link>
+          <Link
+            to="/employee/home"
+            className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6 flex items-center justify-center gap-2 transition"
+          >
+            Sign In (Employee)
+            <ArrowRight size={18} />
+          </Link> */}
+
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-6 flex items-center justify-center gap-2 transition disabled:opacity-50"
+          >
+            {loading ? "Signing In..." : "Sign In"}
+            {!loading && <ArrowRight size={18} />}
+          </button>
 
           {/* Register */}
           <p className="text-center text-gray-600 mt-6">
