@@ -1,7 +1,8 @@
-import AdminLayout from "../../../../components/common/layout/AdminLayout";
+import AdminLayout from "../../../../../components/common/layout/AdminLayout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
+import { addUser } from "../services/userService";
 
 const AddUserPage = () => {
 
@@ -10,16 +11,59 @@ const AddUserPage = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
     const [department, setDepartment] = useState("");
-    const [role, setRole] = useState("Employee");
-    const [status, setStatus] = useState("Active");
 
-    const handleAddUser = () => {
+    const [role, setRole] = useState("EMPLOYEE");
+    const [status, setStatus] = useState("ACTIVE");
 
-        toast.success("Employee Added Successfully");
+    const [loading, setLoading] = useState(false);
 
-        navigate("/admin/users");
+    const handleAddUser = async () => {
+
+        try {
+
+            setLoading(true);
+
+            const userData = {
+                firstName,
+                lastName,
+                email,
+                password,
+                phone,
+                department,
+                role,
+                status,
+            };
+
+            console.log("========== USER DATA ==========");
+            console.log(userData);
+            console.log("===============================");
+
+            await addUser(userData);
+
+            toast.success("Employee Added Successfully");
+
+            navigate("/admin/users");
+
+        } catch (error) {
+
+            console.error("Add User Error:", error);
+
+            if (error.response) {
+                console.log("Status :", error.response.status);
+                console.log("Response :", error.response.data);
+            }
+
+            toast.error("Failed to Add Employee");
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
     };
 
     return (
@@ -28,14 +72,18 @@ const AddUserPage = () => {
             <div className="space-y-6">
 
                 <div className="flex justify-between items-center mb-6">
+
                     <h1 className="text-4xl font-bold text-dark">
                         Add Employee
                     </h1>
 
-                    <button className="bg-primary text-white px-4 py-2 rounded-lg"
-                        onClick={() => navigate("/admin/users")}>
+                    <button
+                        className="bg-primary text-white px-4 py-2 rounded-lg"
+                        onClick={() => navigate("/admin/users")}
+                    >
                         Back
                     </button>
+
                 </div>
 
                 <div className="bg-white rounded-xl shadow-md p-8">
@@ -83,6 +131,19 @@ const AddUserPage = () => {
 
                         <div>
                             <label className="block mb-2 font-medium">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full border border-border p-3 rounded-lg"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block mb-2 font-medium">
                                 Phone
                             </label>
 
@@ -117,11 +178,10 @@ const AddUserPage = () => {
                                 onChange={(e) => setRole(e.target.value)}
                                 className="w-full border border-border p-3 rounded-lg"
                             >
-                                <option>Accountant</option>
-                                <option>Manager</option>
-                                <option>HR Executive</option>
-                                <option>Sales Executive</option>
-                                <option>Software Developer</option>
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="EMPLOYEE">EMPLOYEE</option>
+                                <option value="HR">HR</option>
+                                <option value="MANAGER">MANAGER</option>
                             </select>
                         </div>
 
@@ -135,20 +195,23 @@ const AddUserPage = () => {
                                 onChange={(e) => setStatus(e.target.value)}
                                 className="w-full border border-border p-3 rounded-lg"
                             >
-                                <option>Active</option>
-                                <option>Inactive</option>
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="INACTIVE">INACTIVE</option>
                             </select>
                         </div>
 
                     </div>
 
                     <div className="mt-8">
+
                         <button
                             onClick={handleAddUser}
+                            disabled={loading}
                             className="bg-primary text-white px-6 py-3 rounded-lg"
                         >
-                            Add Employee
+                            {loading ? "Adding..." : "Add Employee"}
                         </button>
+
                     </div>
 
                 </div>
@@ -160,3 +223,6 @@ const AddUserPage = () => {
 };
 
 export default AddUserPage;
+
+
+
