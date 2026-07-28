@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { CreditCard, Smartphone, ChevronLeft } from "lucide-react";
+import { toast } from "react-toastify";
 
 import { getCompanyProfile } from "../../Auth/Services/companyService";
 import { getSubscriptionPlanById } from "../../../subscription/services/subscriptionPlanService";
@@ -93,7 +94,6 @@ const CheckoutPage = () => {
         return;
       }
 
-
       const request = {
         companyId: company.company_id,
         planId: plan.id,
@@ -106,11 +106,13 @@ const CheckoutPage = () => {
 
       console.log("Subscription Created:", response);
 
+      toast.success("Subscription created successfully!");
+
       navigate("/payment-success");
     } catch (error) {
       console.error(error);
 
-      alert("Failed to create subscription");
+      toast.error("Failed to create subscription");
     }
   };
   return (
@@ -145,6 +147,8 @@ const CheckoutPage = () => {
                   </label>
                   <input
                     type="text"
+                    value={company?.name || ""}
+                    readOnly
                     className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
                   />
                 </div>
@@ -156,7 +160,7 @@ const CheckoutPage = () => {
                     </label>
                     <input
                       type="email"
-                      value=""
+                      value={company?.email || ""}
                       readOnly
                       className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
                     />
