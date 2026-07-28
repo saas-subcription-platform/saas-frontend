@@ -1,35 +1,45 @@
 import AdminLayout from "../../../../components/common/layout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 
-const subscription = {
-  id: 1,
-  company: "TechNova Pvt Ltd",
-  customer: "John Doe",
-  plan: "Premium Plan",
-  validity: "12 Months",
-  startDate: "01 Jan 2025",
-  endDate: "31 Dec 2025",
-  renewalDate: "25 Dec 2025",
-  amount: "$999",
-  usersAllowed: 50,
-  modules: [
-    "Customer Management",
-    "Subscription Tracking",
-    "Billing & Payments",
-    "Reports & Analytics",
-  ],
-  paymentStatus: "Paid",
-  status: "Active",
-};
+import { useEffect, useState } from "react";
+import { getMySubscription } from "../../../../subscription/services/subscriptionService";
 
 const SubscriptionDetailsPage = () => {
-
   const navigate = useNavigate();
+  const [subscription, setSubscription] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        const response = await getMySubscription();
+
+        setSubscription(response);
+        console.log(subscription);
+      } catch (err) {
+        console.error(err);
+
+        setError("Failed to load subscription.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubscription();
+  }, []);
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="text-center py-20">Loading subscription...</div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
       <div>
-
         {/* Heading */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-dark">
@@ -43,12 +53,11 @@ const SubscriptionDetailsPage = () => {
 
         {/* Main Card */}
         <div className="bg-white border border-border rounded-2xl shadow-sm p-8">
-
           {/* Top Section */}
           <div className="flex justify-between items-center border-b border-border pb-6">
             <div>
               <h3 className="text-3xl font-bold text-primary">
-                {subscription.plan}
+                {subscription?.planName}
               </h3>
 
               <p className="text-dark/70 mt-2">
@@ -57,13 +66,12 @@ const SubscriptionDetailsPage = () => {
             </div>
 
             <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 font-medium">
-              {subscription.status}
+              {subscription?.status}
             </span>
           </div>
 
           {/* Details Grid */}
           <div className="grid md:grid-cols-2 gap-8 mt-8">
-
             <div>
               <h4 className="font-semibold text-xl mb-4 text-dark">
                 Company Information
@@ -71,16 +79,15 @@ const SubscriptionDetailsPage = () => {
 
               <div className="space-y-3">
                 <p>
-                  <strong>Company:</strong> {subscription.company}
+                  <strong>Company:</strong> {subscription?.companyName}
                 </p>
 
                 <p>
-                  <strong>Customer:</strong> {subscription.customer}
+                  <strong>Customer:</strong> {subscription?.adminName}
                 </p>
 
                 <p>
-                  <strong>Users Allowed:</strong>{" "}
-                  {subscription.usersAllowed}
+                  <strong>Users Allowed:</strong> {subscription?.maximumUsers}
                 </p>
               </div>
             </div>
@@ -92,56 +99,45 @@ const SubscriptionDetailsPage = () => {
 
               <div className="space-y-3">
                 <p>
-                  <strong>Plan:</strong> {subscription.plan}
+                  <strong>Plan:</strong> {subscription?.planName}
                 </p>
 
                 <p>
-                  <strong>Validity:</strong>{" "}
-                  {subscription.validity}
+                  <strong>Validity:</strong> {subscription.validity}
                 </p>
 
                 <p>
-                  <strong>Amount:</strong>{" "}
-                  {subscription.amount}
+                  <strong>Amount:</strong> {subscription?.amount}
                 </p>
               </div>
             </div>
-
           </div>
 
           {/* Dates */}
           <div className="grid md:grid-cols-3 gap-6 mt-10">
-
             <div className="bg-background rounded-xl p-5">
-              <h5 className="text-dark/70 text-sm">
-                Start Date
-              </h5>
+              <h5 className="text-dark/70 text-sm">Start Date</h5>
 
               <p className="text-xl font-bold text-dark mt-2">
-                {subscription.startDate}
+                {subscription?.startDate}
               </p>
             </div>
 
             <div className="bg-background rounded-xl p-5">
-              <h5 className="text-dark/70 text-sm">
-                End Date
-              </h5>
+              <h5 className="text-dark/70 text-sm">End Date</h5>
 
               <p className="text-xl font-bold text-dark mt-2">
-                {subscription.endDate}
+                {subscription?.endDate}
               </p>
             </div>
 
             <div className="bg-background rounded-xl p-5">
-              <h5 className="text-dark/70 text-sm">
-                Renewal Date
-              </h5>
+              <h5 className="text-dark/70 text-sm">Renewal Date</h5>
 
               <p className="text-xl font-bold text-dark mt-2">
-                {subscription.renewalDate}
+                {subscription?.renewalDate}
               </p>
             </div>
-
           </div>
 
           {/* Modules */}
@@ -151,12 +147,12 @@ const SubscriptionDetailsPage = () => {
             </h4>
 
             <div className="grid md:grid-cols-2 gap-4">
-              {subscription.modules.map((module) => (
+              {subscription?.features?.map((feature) => (
                 <div
-                  key={module}
+                  key={feature}
                   className="bg-background rounded-xl p-4 border border-border"
                 >
-                  {module}
+                  {feature}
                 </div>
               ))}
             </div>
@@ -170,9 +166,7 @@ const SubscriptionDetailsPage = () => {
 
             <div className="bg-background rounded-xl p-5 flex justify-between items-center">
               <div>
-                <p className="text-dark/70">
-                  Payment Status
-                </p>
+                <p className="text-dark/70">Payment Status</p>
 
                 <p className="font-bold text-green-600 text-lg">
                   {subscription.paymentStatus}
@@ -180,9 +174,7 @@ const SubscriptionDetailsPage = () => {
               </div>
 
               <div>
-                <p className="text-dark/70">
-                  Subscription Amount
-                </p>
+                <p className="text-dark/70">Subscription Amount</p>
 
                 <p className="font-bold text-primary text-lg">
                   {subscription.amount}
@@ -193,7 +185,6 @@ const SubscriptionDetailsPage = () => {
 
           {/* Buttons */}
           <div className="flex gap-4 mt-10">
-
             <button
               onClick={() => navigate("/admin/renewal")}
               className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-xl"
@@ -204,11 +195,8 @@ const SubscriptionDetailsPage = () => {
             <button className="border border-border px-6 py-3 rounded-xl hover:bg-background">
               Download Invoice
             </button>
-
           </div>
-
         </div>
-
       </div>
     </AdminLayout>
   );
