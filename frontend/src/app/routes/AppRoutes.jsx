@@ -52,8 +52,6 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/checkout" element={<PlanConfigurationPage />} />
-      <Route path="/payment" element={<CheckoutPage />} />
-      <Route path="/payment-success" element={<PaymentSuccessPage />} />
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -73,6 +71,8 @@ function AppRoutes() {
 
       {/* Protected Admin Routes */}
       <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+        <Route path="/payment" element={<CheckoutPage />} />
+        <Route path="/payment-success" element={<PaymentSuccessPage />} />
         <Route path="/admin/home" element={<AdminHomePage />} />
         <Route path="/admin/dashboard" element={<DashboardPage />} />
         <Route path="/admin/subscriptions" element={<SubscriptionsPage />} />
