@@ -15,8 +15,6 @@ export default function RegisterPage() {
   const [companySize, setCompanySize] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [department, setDepartment] = useState("");
 
   const handleRegister = async () => {
     if (
@@ -24,8 +22,6 @@ export default function RegisterPage() {
       !firstName ||
       !lastName ||
       !email ||
-      !phone ||
-      !department ||
       !companySize ||
       !password ||
       !confirmPassword
@@ -49,8 +45,6 @@ export default function RegisterPage() {
       firstName,
       lastName,
       email,
-      phone,
-      department,
       companySize,
       password,
     };
@@ -143,36 +137,7 @@ export default function RegisterPage() {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
             />
           </div>
-
-          {/* Phone Number */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter phone number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
-            />
-          </div>
-
-          {/* Department */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Department
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter department"
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
-            />
-          </div>
+        
           {/* Company Size */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
