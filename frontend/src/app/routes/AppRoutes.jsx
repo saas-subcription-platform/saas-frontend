@@ -22,6 +22,7 @@ import {
   RenewalPage,
   PaymentsPage,
   InvoicesPage,
+  InvoiceDetailsPage,
   NotificationsPage,
   HelpPage,
 } from "../../features/Admin";
@@ -77,6 +78,7 @@ function AppRoutes() {
         <Route path="/admin/notifications" element={<NotificationsPage />} />
         <Route path="/admin/payments" element={<PaymentsPage />} />
         <Route path="/admin/invoices" element={<InvoicesPage />} />
+        <Route path="/admin/invoices/:id" element={<InvoiceDetailsPage />} />
         <Route path="/admin/help" element={<HelpPage />} />
       </Route>
 

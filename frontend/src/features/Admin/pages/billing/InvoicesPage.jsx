@@ -1,101 +1,96 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../../../components/common/layout/AdminLayout";
+import api from "../../../../api/api";
 
 export default function Invoices() {
-  const invoices = [
-    {
-      invoiceNo: "INV001",
-      period: "June 2026",
-      amount: "₹12,500",
-      status: "Paid",
-    },
-    {
-      invoiceNo: "INV002",
-      period: "May 2026",
-      amount: "₹12,500",
-      status: "Paid",
-    },
-    {
-      invoiceNo: "INV003",
-      period: "April 2026",
-      amount: "₹12,500",
-      status: "Paid",
-    },
-  ];
+
+  const [invoices, setInvoices] = useState([]);
+
+  useEffect(() => {
+    const fetchInvoices = async () => {
+      try {
+        const response = await api.get("/invoices");
+        setInvoices(response.data);
+      } catch (error) {
+        console.error("Failed to fetch invoices:", error);
+      }
+    };
+
+    fetchInvoices();
+  }, []);
+
 
   return (
     <AdminLayout>
-    <div className="min-h-screen bg-[#F4F7F3] p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen bg-[#F4F7F3] p-6">
+        <div className="max-w-6xl mx-auto">
 
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">
-          Invoices
-        </h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-8">
+            Invoices
+          </h1>
 
-        <div className="bg-white rounded-2xl shadow p-6">
+          <div className="bg-white rounded-2xl shadow p-6">
 
-          <h2 className="text-2xl font-semibold mb-4">
-            Invoice History
-          </h2>
+            <h2 className="text-2xl font-semibold mb-4">
+              Invoice History
+            </h2>
 
-          <table className="w-full">
+            <table className="w-full">
 
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-3">Invoice No</th>
-                <th className="text-left py-3">Billing Period</th>
-                <th className="text-left py-3">Amount</th>
-                <th className="text-left py-3">Status</th>
-                <th className="text-left py-3">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {invoices.map((invoice, index) => (
-                <tr key={index} className="border-b">
-
-                  <td className="py-4">
-                    {invoice.invoiceNo}
-                  </td>
-
-                  <td>
-                    {invoice.period}
-                  </td>
-
-                  <td>
-                    {invoice.amount}
-                  </td>
-
-                  <td>
-                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                      {invoice.status}
-                    </span>
-                  </td>
-
-                  <td className="space-x-2">
-
-                    <button className="bg-[#7A9E7E] text-white px-3 py-1 rounded">
-                      View
-                    </button>
-
-                    <button className="bg-gray-500 text-white px-3 py-1 rounded">
-                      Download
-                    </button>
-
-                  </td>
-
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-3">Invoice No</th>
+                  <th className="text-left py-3">Billing Period</th>
+                  <th className="text-left py-3">Amount</th>
+                  <th className="text-left py-3">Status</th>
+                  <th className="text-left py-3">Actions</th>
                 </tr>
-              ))}
-            </tbody>
+              </thead>
 
-          </table>
+              <tbody>
+                {invoices.map((invoice) => (
+                  <tr key={invoice.invoiceId} className="border-b">
+
+                    <td className="py-4">
+                      {invoice.invoiceNumber}
+                    </td>
+
+                    <td>
+                      {invoice.billingStartDate} - {invoice.billingEndDate}
+                    </td>
+
+                    <td>
+                      ₹{invoice.totalAmount}
+                    </td>
+
+                    <td>
+                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                        {invoice.status}
+                      </span>
+                    </td>
+
+                    <td className="space-x-2">
+                      <Link
+                        to={`/admin/invoices/${invoice.invoiceId}`}
+                        className="bg-primary text-white px-4 py-2 rounded-lg">
+                        View
+                      </Link>
+
+                    </td>
+
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
+
+          </div>
+
+
 
         </div>
-
-        
-
       </div>
-    </div>
     </AdminLayout>
   );
 }
