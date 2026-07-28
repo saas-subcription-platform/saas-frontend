@@ -15,11 +15,13 @@ const AdminSidebar = () => {
   const navigate = useNavigate();
   return (
     <aside className="w-64 bg-white border-r border-border min-h-screen">
-      <Link to="/" className="block p-6 border-b border-border">
-        <h1 className="text-2xl font-bold text-primary hover:opacity-80 transition">
-          SaaS Subscription
-        </h1>
-      </Link>
+      <div className="p-6 border-b border-border text-center">
+        <Link to="/">
+          <h1 className="text-2xl font-bold text-primary cursor-pointer hover:opacity-80 transition">
+            SaaS Platform
+          </h1>
+        </Link>
+      </div>
       <nav className="p-4 space-y-2">
         <div
           className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/10 cursor-pointer"

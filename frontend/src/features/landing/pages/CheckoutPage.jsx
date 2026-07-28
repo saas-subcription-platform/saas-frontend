@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { getCompanyProfile } from "../../Auth/Services/companyService";
 import { getSubscriptionPlanById } from "../../../subscription/services/subscriptionPlanService";
 import { createSubscription } from "../../../subscription/services/subscriptionService";
+import { processRazorpayPayment } from "../../../paymentManagement/services/razorpayService";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -89,8 +90,8 @@ const CheckoutPage = () => {
 
   const handleConfirmPayment = async () => {
     try {
-      if (!plan || !selectedPricing) {
-        alert("Plan details are not loaded.");
+      if (!plan || !selectedPricing || !company) {
+        toast.error("Checkout details are not loaded.");
         return;
       }
 
@@ -102,247 +103,231 @@ const CheckoutPage = () => {
 
       console.log("Subscription Request:", request);
 
+      // 1. Create subscription
       const response = await createSubscription(request);
 
       console.log("Subscription Created:", response);
 
-      toast.success("Subscription created successfully!");
+      const subscription = response.data;
+      const subscriptionId = subscription.subscriptionId;
 
-      navigate("/payment-success");
+      console.log("Subscription ID:", subscriptionId);
+
+      // 2. Open Razorpay
+      await processRazorpayPayment({
+        subscriptionId,
+        amount: total,
+        paymentGateway,
+
+        // 3. Runs only after successful payment verification
+        onSuccess: () => {
+          toast.success("Payment successful!");
+          navigate("/payment-success");
+        },
+      });
+
     } catch (error) {
-      console.error(error);
-
-      toast.error("Failed to create subscription");
+      console.error("Checkout failed:", error);
+      toast.error("Failed to process payment");
     }
   };
   return (
-    <div className="bg-background min-h-screen text-dark p-4 md:p-8 font-sans">
-      <div className="max-w-7xl mx-auto">
-        {/* Top Navigation Bar */}
-        <div className="flex items-center justify-between border-b border-border pb-6 mb-8 text-sm font-medium">
-          <div className="flex items-center gap-2 text-dark/60">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1 hover:text-primary transition mr-2"
-            >
-              <ChevronLeft size={16} /> Back
-            </button>
+  <div className="bg-background min-h-screen text-dark p-4 md:p-8 font-sans">
+    <div className="max-w-7xl mx-auto">
+
+      {/* Top Navigation Bar */}
+      <div className="flex items-center justify-between border-b border-border pb-6 mb-8 text-sm font-medium">
+        <div className="flex items-center gap-2 text-dark/60">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 hover:text-primary transition mr-2"
+          >
+            <ChevronLeft size={16} /> Back
+          </button>
+        </div>
+      </div>
+
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        {/* LEFT COLUMN */}
+        <div className="lg:col-span-7 space-y-8">
+
+          {/* Company Details */}
+          <div className="bg-white border border-border rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
+            <h2 className="text-2xl font-black text-dark tracking-wide border-b border-border pb-3">
+              Details
+            </h2>
+
+            <div className="space-y-4">
+
+              {/* Name */}
+              <div>
+                <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
+                  Your name *
+                </label>
+
+                <input
+                  type="text"
+                  value={company?.name || ""}
+                  readOnly
+                  className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
+                />
+              </div>
+
+              {/* Email + Phone */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
+                    Email *
+                  </label>
+
+                  <input
+                    type="email"
+                    value={company?.email || ""}
+                    readOnly
+                    className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
+                    Phone *
+                  </label>
+
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 border border-r-0 border-border bg-background rounded-l-lg text-xs font-bold text-dark/60">
+                      +91
+                    </span>
+
+                    <input
+                      type="tel"
+                      value={company?.phone || ""}
+                      readOnly
+                      className="w-full px-4 py-2.5 border border-border bg-white rounded-r-lg focus:outline-none focus:border-primary text-sm font-medium"
+                    />
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Company + GST */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
+                    Company Name
+                  </label>
+
+                  <input
+                    type="text"
+                    value={company?.companyName || ""}
+                    readOnly
+                    className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
+                    VAT / GSTIN
+                  </label>
+
+                  <input
+                    type="text"
+                    value={company?.gstNumber || ""}
+                    readOnly
+                    className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
+                  />
+                </div>
+
+              </div>
+
+              {/* Address */}
+              <div>
+                <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
+                  Street and Number *
+                </label>
+
+                <input
+                  type="text"
+                  value={company?.address || ""}
+                  readOnly
+                  className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
+                />
+              </div>
+
+              {/* City + ZIP */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
+                    City *
+                  </label>
+
+                  <input
+                    type="text"
+                    value={company?.city || ""}
+                    readOnly
+                    className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
+                    Zip Code *
+                  </label>
+
+                  <input
+                    type="text"
+                    value={company?.zipCode || ""}
+                    readOnly
+                    className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
+                  />
+                </div>
+
+              </div>
+
+            </div>
           </div>
-          <div></div>
+
         </div>
 
-        {/* Master Column Configuration Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Block Side Panel: User Form Fields & Payment Tabs */}
-          <div className="lg:col-span-7 space-y-8">
-            <div className="bg-white border border-border rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
-              <h2 className="text-2xl font-black text-dark tracking-wide border-b border-border pb-3">
-                Details
-              </h2>
+        {/* RIGHT COLUMN */}
+        <div className="lg:col-span-5 bg-white border border-border rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
-                    Your name *
-                  </label>
-                  <input
-                    type="text"
-                    value={company?.name || ""}
-                    readOnly
-                    className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
-                  />
-                </div>
+          {/* Subscription */}
+          <div className="flex gap-4 items-start">
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      value={company?.email || ""}
-                      readOnly
-                      className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
-                      Phone *
-                    </label>
-                    <div className="flex">
-                      <span className="inline-flex items-center px-3 border border-r-0 border-border bg-background rounded-l-lg text-xs font-bold text-dark/60">
-                        +91
-                      </span>
-                      <input
-                        type="tel"
-                        value={company?.phone || ""}
-                        readOnly
-                        className="w-full px-4 py-2.5 border border-border bg-white rounded-r-lg focus:outline-none focus:border-primary text-sm font-medium"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
-                      Company Name
-                    </label>
-                    <input
-                      type="text"
-                      value={company?.companyName || ""}
-                      readOnly
-                      className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
-                      VAT / GSTIN
-                    </label>
-                    <input
-                      type="text"
-                      value={company?.gstNumber || ""}
-                      readOnly
-                      className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
-                    Street and Number *
-                  </label>
-                  <input
-                    type="text"
-                    value={company?.address || ""}
-                    readOnly
-                    className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
-                      City *
-                    </label>
-                    <input
-                      type="text"
-                      value={company?.city || ""}
-                      readOnly
-                      className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
-                      Zip Code *
-                    </label>
-                    <input
-                      type="text"
-                      value={company?.zipCode || ""}
-                      readOnly
-                      className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
-                    />
-                  </div>
-                </div>
-              </div>
+            <div className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+              {plan?.maximumUsers}
             </div>
 
-            {/* Payment Integration Panel Layer */}
-            <div className="bg-white border border-border rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
-              <h2 className="text-xl font-bold text-dark tracking-wide">
-                Select Payment Method
-              </h2>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-bold text-sm text-dark truncate">
+                {plan?.planName}
+              </h4>
 
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setPaymentGateway("upi")}
-                  className={`flex items-center justify-center gap-3 p-4 border rounded-xl font-bold transition text-sm ${paymentGateway === "upi" ? "border-primary bg-secondary/10 text-primary" : "border-border hover:bg-background text-dark"}`}
-                >
-                  <Smartphone size={18} /> UPI (GPay/PhonePe)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentGateway("card")}
-                  className={`flex items-center justify-center gap-3 p-4 border rounded-xl font-bold transition text-sm ${paymentGateway === "card" ? "border-primary bg-secondary/10 text-primary" : "border-border hover:bg-background text-dark"}`}
-                >
-                  <CreditCard size={18} /> Credit / Debit Card
-                </button>
-              </div>
-
-              {/* Dynamic Option Input Toggles depending on active selection context */}
-              <div className="p-4 bg-background rounded-xl border border-border text-sm">
-                {paymentGateway === "upi" ? (
-                  <div className="space-y-3">
-                    <label className="block text-xs font-bold uppercase text-dark/70">
-                      Enter UPI ID VPA *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="username@upi"
-                      className="w-full md:w-80 px-4 py-2 border border-border bg-white rounded-lg focus:outline-none focus:border-primary font-medium"
-                    />
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold mb-1 uppercase text-dark/70">
-                        Card Number *
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="xxxx xxxx xxxx xxxx"
-                        className="w-full px-4 py-2 border border-border bg-white rounded-lg focus:outline-none focus:border-primary font-medium"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold mb-1 uppercase text-dark/70">
-                          Expiry Date *
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="MM/YY"
-                          className="w-full px-4 py-2 border border-border bg-white rounded-lg focus:outline-none focus:border-primary font-medium"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold mb-1 uppercase text-dark/70">
-                          CVV *
-                        </label>
-                        <input
-                          type="password"
-                          placeholder="***"
-                          maxLength="3"
-                          className="w-full px-4 py-2 border border-border bg-white rounded-lg focus:outline-none focus:border-primary font-medium"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <p className="text-xs text-dark/60 font-medium capitalize">
+                {billing}
+              </p>
             </div>
+
+            <span className="font-bold text-sm text-dark tracking-tight">
+              ₹
+              {subtotal.toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+              })}
+            </span>
+
           </div>
 
-          {/* Right Column Section: Itemized Checkout Receipt Summary */}
-          <div className="lg:col-span-5 bg-white border border-border rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
-            {/* Subscription Summary */}
-            <div className="flex gap-4 items-start">
-              <div className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-                {plan?.maximumUsers}
-              </div>
+          {/* Billing Summary */}
+          <div className="space-y-2 text-sm font-medium border-b border-border pb-4 text-dark/80">
 
-              <div className="flex-1 min-w-0">
-                <h4 className="font-bold text-sm text-dark truncate">
-                  {plan?.planName}
-                </h4>
-
-                <p className="text-xs text-dark/60 font-medium capitalize">
-                  {billing}
-                </p>
-              </div>
-
-              <span className="font-bold text-sm text-dark tracking-tight">
+            <div className="flex justify-between">
+              <span className="text-dark/60">Subtotal</span>
+              <span>
                 ₹
                 {subtotal.toLocaleString("en-IN", {
                   minimumFractionDigits: 2,
@@ -350,75 +335,67 @@ const CheckoutPage = () => {
               </span>
             </div>
 
-            {/* Billing Summary */}
-            <div className="space-y-2 text-sm font-medium border-b border-border pb-4 text-dark/80">
-              <div className="flex justify-between">
-                <span className="text-dark/60">Subtotal</span>
-
-                <span>
-                  ₹
-                  {subtotal.toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>SGST (9%)</span>
-
-                <span>
-                  ₹
-                  {sgst.toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>CGST (9%)</span>
-
-                <span>
-                  ₹
-                  {cgst.toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
-            </div>
-
-            {/* Grand Total */}
-            <div className="flex justify-between items-baseline font-black text-dark border-b border-border pb-4">
-              <span className="text-base">Total</span>
-
-              <span className="text-2xl tracking-tight text-dark">
+            <div className="flex justify-between">
+              <span>SGST (9%)</span>
+              <span>
                 ₹
-                {total.toLocaleString("en-IN", {
+                {sgst.toLocaleString("en-IN", {
                   minimumFractionDigits: 2,
                 })}
               </span>
             </div>
 
-            {/* Sales Conditions */}
-            <div className="space-y-4 pt-2">
-              <button
-                onClick={handleConfirmPayment}
-                className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-bold tracking-wide transition shadow-md flex items-center justify-center gap-2"
-              >
-                Confirm & Pay <span className="text-lg">→</span>
-              </button>
-
-              <button
-                onClick={() => navigate(-1)}
-                className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-dark/60 hover:text-dark transition"
-              >
-                Cancel and return
-              </button>
+            <div className="flex justify-between">
+              <span>CGST (9%)</span>
+              <span>
+                ₹
+                {cgst.toLocaleString("en-IN", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
+          </div>
+
+          {/* Total */}
+          <div className="flex justify-between items-baseline font-black text-dark border-b border-border pb-4">
+            <span className="text-base">Total</span>
+
+            <span className="text-2xl tracking-tight text-dark">
+              ₹
+              {total.toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+              })}
+            </span>
+          </div>
+
+          {/* Buttons */}
+          <div className="space-y-4 pt-2">
+
+            <button
+              onClick={handleConfirmPayment}
+              className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-bold tracking-wide transition shadow-md flex items-center justify-center gap-2"
+            >
+              Confirm & Pay <span className="text-lg">→</span>
+            </button>
+
+            <button
+              onClick={() => navigate(-1)}
+              className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-dark/60 hover:text-dark transition"
+            >
+              Cancel and return
+            </button>
+
+          </div>
+
+        </div>
+        {/* END RIGHT COLUMN */}
+
+      </div>
+      {/* END MAIN GRID */}
+
+    </div>
+  </div>
+);
+};
 export default CheckoutPage;

@@ -15,6 +15,7 @@ export { default as EditCompanyPage } from "./pages/company/EditCompanyPage";
 // Billing
 export { default as PaymentsPage } from "./pages/billing/PaymentsPage";
 export { default as InvoicesPage } from "./pages/billing/InvoicesPage";
+export { default as InvoiceDetailsPage } from "./pages/billing/InvoiceDetailsPage";
 
 // Subscriptions
 export { default as SubscriptionsPage } from "./pages/subscriptions/SubscriptionsPage";
