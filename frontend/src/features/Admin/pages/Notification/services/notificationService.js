@@ -24,4 +24,12 @@ export const clearAllNotifications = async () => {
     return await api.delete(
         "/admin/notifications/clear"
     );
+
+    
+    
+
+};
+// Get latest notification for dashboard
+export const getLatestNotification = async () => {
+    return await api.get("/admin/notifications/latest");
 };
