@@ -17,3 +17,12 @@ export const verifyPayment = async (verificationData) => {
 
     return response.data;
 };
+
+export const markPaymentFailed = async (data) => {
+    const response = await api.post("/payments/failed", data
+
+    );
+    
+    return response.data;
+};
+
