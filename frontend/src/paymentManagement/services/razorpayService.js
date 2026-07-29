@@ -1,4 +1,8 @@
-import { createPaymentOrder, verifyPayment } from "./paymentApi";
+import {
+  createPaymentOrder,
+  verifyPayment,
+  markPaymentFailed,
+} from "./paymentApi";
 
 export const processRazorpayPayment = async ({
   subscriptionId,
@@ -62,6 +66,27 @@ export const processRazorpayPayment = async ({
   };
 
   const razorpay = new window.Razorpay(options);
+
+  razorpay.on("payment.failed", async (response) => {
+    try {
+      await markPaymentFailed({
+        razorpayOrderId:
+          response.error.metadata?.order_id ||
+          order.gatewayOrderId,
+
+        razorpayPaymentId:
+          response.error.metadata?.payment_id || null,
+
+        failureReason:
+          response.error.description || "Payment failed",
+      });
+    } catch (error) {
+      console.error(
+        "Failed to record failed payment:",
+        error
+      );
+    }
+  });
 
   razorpay.open();
 };
