@@ -22,6 +22,7 @@ import {
   RenewalPage,
   PaymentsPage,
   InvoicesPage,
+  InvoiceDetailsPage,
   NotificationsPage,
   HelpPage,
 } from "../../features/Admin";
@@ -43,6 +44,9 @@ import MyTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/MyT
 import CreateTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/CreateTimesheetPage";
 import ViewTimesheetPage from "../../features/Employee/EmployeeTimesheet/pages/ViewTimesheetPage";
 
+//payment 
+import RazorpayTestPage from "../../paymentManagement/pages/RazorpayTestPage";
+
 function AppRoutes() {
   return (
     <Routes>
@@ -57,6 +61,12 @@ function AppRoutes() {
       <Route
         path="/password-reset-success"
         element={<ResetPasswordSuccessPage />}
+      />
+
+      {/* Temp public route for testing */}
+      <Route
+        path="/razorpay-test"
+        element={<RazorpayTestPage />}
       />
 
       {/* Protected Admin Routes */}
@@ -77,12 +87,13 @@ function AppRoutes() {
         <Route path="/admin/notifications" element={<NotificationsPage />} />
         <Route path="/admin/payments" element={<PaymentsPage />} />
         <Route path="/admin/invoices" element={<InvoicesPage />} />
+        <Route path="/admin/invoices/:id" element={<InvoiceDetailsPage />} />
         <Route path="/admin/help" element={<HelpPage />} />
       </Route>
 
       {/* Protected Employee Routes */}
       {/* Protected Employee Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["USER","EMPLOYEE","HR","MANAGER"]} />}>
         <Route path="/employee/home" element={<EmployeeHomePage />} />
         <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
         <Route

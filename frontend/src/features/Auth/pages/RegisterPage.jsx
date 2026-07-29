@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
-import { useNavigate, useLocation } from "react-router-dom";
 import { register } from "../services/authService";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [showPassword, setShowPassword] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -52,9 +57,15 @@ export default function RegisterPage() {
     try {
       await register(registerData);
 
+      // Remove authentication data of any previously logged-in user
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+
       toast.success("Account created successfully!");
 
+      // New admin must login and receive their own JWT
       navigate("/login", {
+        replace: true,
         state: location.state,
       });
     } catch (error) {
@@ -70,9 +81,12 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-[#F4F7F3] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
+
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-4xl font-bold text-gray-800">Create Account</h2>
+          <h2 className="text-4xl font-bold text-gray-800">
+            Create Account
+          </h2>
 
           <p className="text-gray-500 mt-2">
             Start managing subscriptions today
@@ -81,6 +95,7 @@ export default function RegisterPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+
           {/* Company Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -96,7 +111,7 @@ export default function RegisterPage() {
             />
           </div>
 
-          {/* admin first name */}
+          {/* Admin First Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Admin's First Name
@@ -152,19 +167,29 @@ export default function RegisterPage() {
               onChange={(e) => setCompanySize(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A9E7E]"
             >
-              <option value="">Select Company Size</option>
+              <option value="">
+                Select Company Size
+              </option>
 
-              <option value="ONE_TO_TEN">1-10 Employees</option>
+              <option value="ONE_TO_TEN">
+                1-10 Employees
+              </option>
 
-              <option value="ELEVEN_TO_FIFTY">11-50 Employees</option>
+              <option value="ELEVEN_TO_FIFTY">
+                11-50 Employees
+              </option>
 
-              <option value="FIFTY_ONE_TO_TWO_HUNDRED">51-200 Employees</option>
+              <option value="FIFTY_ONE_TO_TWO_HUNDRED">
+                51-200 Employees
+              </option>
 
               <option value="TWO_HUNDRED_ONE_TO_FIVE_HUNDRED">
                 201-500 Employees
               </option>
 
-              <option value="FIVE_HUNDRED_PLUS">500+ Employees</option>
+              <option value="FIVE_HUNDRED_PLUS">
+                500+ Employees
+              </option>
             </select>
           </div>
 
@@ -208,8 +233,9 @@ export default function RegisterPage() {
             />
           </div>
 
-          {/* Button */}
+          {/* Create Account Button */}
           <button
+            type="button"
             onClick={handleRegister}
             className="w-full bg-[#7A9E7E] hover:bg-[#6C8C70] text-white py-3 rounded-lg mt-2 flex items-center justify-center gap-2"
           >
@@ -231,10 +257,14 @@ export default function RegisterPage() {
 
         {/* Back Home */}
         <div className="text-center mt-6">
-          <Link to="/" className="text-gray-500 hover:text-[#7A9E7E]">
+          <Link
+            to="/"
+            className="text-gray-500 hover:text-[#7A9E7E]"
+          >
             Back to Home
           </Link>
         </div>
+
       </div>
     </div>
   );

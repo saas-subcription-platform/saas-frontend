@@ -1,30 +1,30 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../../../components/common/layout/AdminLayout";
+import { getAllInvoices } from "../../../../paymentManagement/services/invoiceApi";
 
 export default function Invoices() {
-  const invoices = [
-    {
-      invoiceNo: "INV001",
-      period: "June 2026",
-      amount: "₹12,500",
-      status: "Paid",
-    },
-    {
-      invoiceNo: "INV002",
-      period: "May 2026",
-      amount: "₹12,500",
-      status: "Paid",
-    },
-    {
-      invoiceNo: "INV003",
-      period: "April 2026",
-      amount: "₹12,500",
-      status: "Paid",
-    },
-  ];
 
-  return (
-    <AdminLayout>
+  const [invoices, setInvoices] = useState([]);
+
+  useEffect(() => {
+
+    const fetchInvoices = async () => {
+      try {
+        const data = await getAllInvoices();
+        setInvoices(data);
+      } catch (error) {
+        console.error("Failed to fetch invoices:", error);
+      }
+    };
+
+    fetchInvoices();
+
+  }, []);
+
+
+return (
+  <AdminLayout>
     <div className="min-h-screen bg-[#F4F7F3] p-6">
       <div className="max-w-6xl mx-auto">
 
@@ -51,19 +51,19 @@ export default function Invoices() {
             </thead>
 
             <tbody>
-              {invoices.map((invoice, index) => (
-                <tr key={index} className="border-b">
+              {invoices.map((invoice) => (
+                <tr key={invoice.invoiceId} className="border-b">
 
                   <td className="py-4">
-                    {invoice.invoiceNo}
+                    {invoice.invoiceNumber}
                   </td>
 
                   <td>
-                    {invoice.period}
+                    {invoice.billingStartDate} - {invoice.billingEndDate}
                   </td>
 
                   <td>
-                    {invoice.amount}
+                    ₹{invoice.totalAmount}
                   </td>
 
                   <td>
@@ -73,14 +73,11 @@ export default function Invoices() {
                   </td>
 
                   <td className="space-x-2">
-
-                    <button className="bg-[#7A9E7E] text-white px-3 py-1 rounded">
+                    <Link
+                      to={`/admin/invoices/${invoice.invoiceId}`}
+                      className="bg-primary text-white px-4 py-2 rounded-lg">
                       View
-                    </button>
-
-                    <button className="bg-gray-500 text-white px-3 py-1 rounded">
-                      Download
-                    </button>
+                    </Link>
 
                   </td>
 
@@ -92,10 +89,10 @@ export default function Invoices() {
 
         </div>
 
-        
+
 
       </div>
     </div>
-    </AdminLayout>
-  );
+  </AdminLayout>
+);
 }

@@ -1,14 +1,24 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { CreditCard, Smartphone, ChevronLeft } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { getCompanyProfile } from "../../Auth/Services/companyService";
 import { getSubscriptionPlanById } from "../../../subscription/services/subscriptionPlanService";
-import { createSubscription } from "../../../subscription/services/subscriptionService";
+import {
+  renewSubscription,
+  createSubscription,
+  changeSubscriptionPlan,
+} from "../../../subscription/services/subscriptionService";
+import { processRazorpayPayment } from "../../../paymentManagement/services/razorpayService";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  console.log("LOCATION =", location);
+  console.log("LOCATION.STATE =", location.state);
+
   const [searchParams] = useSearchParams();
 
   const planId = searchParams.get("plan");
@@ -17,16 +27,31 @@ const CheckoutPage = () => {
 
   const isYearly = billing === "YEARLY";
 
+  const renewalData = location.state;
+
+  const renewalSubscription = renewalData?.subscription;
+  const renewalPlan = renewalData?.plan;
+  const renewalPricing = renewalData?.pricing;
+
   console.log("planId =", planId);
   console.log("billing =", billing);
 
   // State to toggle active payment options
   const [paymentGateway, setPaymentGateway] = useState("upi");
-  const [company, setCompany] = useState(null);
-  const [plan, setPlan] = useState(null);
+  const [company, setCompany] = useState(
+    renewalSubscription
+      ? {
+          companyName: renewalSubscription.companyName,
+          name: renewalSubscription.adminName,
+        }
+      : null,
+  );
+  const [plan, setPlan] = useState(renewalPlan || null);
 
   const billingCycleLabelText = isYearly ? "per year" : "per month";
+
   useEffect(() => {
+    if (location.state?.plan) return;
     const loadCompany = async () => {
       const token = localStorage.getItem("token");
 
@@ -67,8 +92,12 @@ const CheckoutPage = () => {
   }, [planId]);
 
   const selectedPricing = useMemo(() => {
+    if (location.state?.pricing) {
+      return location.state.pricing;
+    }
+
     return plan?.pricingOptions?.find((item) => item.billingCycle === billing);
-  }, [plan, billing]);
+  }, [plan, billing, location.state]);
 
   const subtotal = selectedPricing?.price ?? 0;
 
@@ -89,30 +118,74 @@ const CheckoutPage = () => {
 
   const handleConfirmPayment = async () => {
     try {
-      if (!plan || !selectedPricing) {
-        alert("Plan details are not loaded.");
+      if (!plan || !selectedPricing || !company) {
+        toast.error("Checkout details are not loaded.");
         return;
       }
 
-      const request = {
-        companyId: company.company_id,
-        planId: plan.id,
-        pricingId: selectedPricing.id,
-      };
+      let response;
+      let subscriptionId;
 
-      console.log("Subscription Request:", request);
+      console.log("renewalSubscription =", renewalSubscription);
 
-      const response = await createSubscription(request);
+      if (renewalSubscription?.subscriptionId) {
+        // This company already has a subscription — never call the
+        // subscribe/create endpoint again, or the backend returns 409.
+        const isSamePlan = renewalSubscription.planName === plan.planName;
 
-      console.log("Subscription Created:", response);
+        console.log(
+          isSamePlan
+            ? "Renewing existing subscription"
+            : "Changing plan on existing subscription",
+        );
 
-      toast.success("Subscription created successfully!");
+        console.log({
+          planId: plan.id,
+          pricingId: selectedPricing.id,
+        });
 
-      navigate("/payment-success");
+        response = isSamePlan
+          ? await renewSubscription(renewalSubscription.subscriptionId)
+          : await changeSubscriptionPlan(renewalSubscription.subscriptionId, {
+              planId: plan.id,
+              pricingId: selectedPricing.id,
+            });
+
+        subscriptionId = renewalSubscription.subscriptionId;
+      } else {
+        // Brand-new subscription for a company that doesn't have one yet.
+        const request = {
+          companyId: company.company_id,
+          planId: plan.id,
+          pricingId: selectedPricing.id,
+        };
+
+        console.log("Subscription Request:", request);
+
+        response = await createSubscription(request);
+
+        console.log("Subscription Created:", response);
+
+        subscriptionId = response.data?.subscriptionId ?? response.data?.id;
+      }
+
+      console.log("Subscription ID:", subscriptionId);
+
+      // Open Razorpay
+      await processRazorpayPayment({
+        subscriptionId,
+        amount: total,
+        paymentGateway,
+
+        // Runs only after successful payment verification
+        onSuccess: () => {
+          toast.success("Payment successful!");
+          navigate("/payment-success");
+        },
+      });
     } catch (error) {
-      console.error(error);
-
-      toast.error("Failed to create subscription");
+      console.error("Checkout failed:", error);
+      toast.error("Failed to process payment");
     }
   };
   return (
@@ -128,36 +201,42 @@ const CheckoutPage = () => {
               <ChevronLeft size={16} /> Back
             </button>
           </div>
-          <div></div>
         </div>
 
-        {/* Master Column Configuration Grid */}
+        {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Block Side Panel: User Form Fields & Payment Tabs */}
+          {/* LEFT COLUMN */}
           <div className="lg:col-span-7 space-y-8">
+            {/* Company Details */}
             <div className="bg-white border border-border rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
               <h2 className="text-2xl font-black text-dark tracking-wide border-b border-border pb-3">
                 Details
               </h2>
 
               <div className="space-y-4">
+                {/* Name */}
                 <div>
                   <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
                     Your name *
                   </label>
+
                   <input
                     type="text"
-                    value={company?.name || ""}
+                    value={
+                      company?.name || renewalSubscription?.adminName || ""
+                    }
                     readOnly
                     className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
                   />
                 </div>
 
+                {/* Email + Phone */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
                       Email *
                     </label>
+
                     <input
                       type="email"
                       value={company?.email || ""}
@@ -165,14 +244,17 @@ const CheckoutPage = () => {
                       className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
                     />
                   </div>
+
                   <div>
                     <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
                       Phone *
                     </label>
+
                     <div className="flex">
                       <span className="inline-flex items-center px-3 border border-r-0 border-border bg-background rounded-l-lg text-xs font-bold text-dark/60">
                         +91
                       </span>
+
                       <input
                         type="tel"
                         value={company?.phone || ""}
@@ -183,22 +265,30 @@ const CheckoutPage = () => {
                   </div>
                 </div>
 
+                {/* Company + GST */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
                       Company Name
                     </label>
+
                     <input
                       type="text"
-                      value={company?.companyName || ""}
+                      value={
+                        company?.companyName ||
+                        renewalSubscription?.companyName ||
+                        ""
+                      }
                       readOnly
                       className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
                     />
                   </div>
+
                   <div>
                     <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
                       VAT / GSTIN
                     </label>
+
                     <input
                       type="text"
                       value={company?.gstNumber || ""}
@@ -208,10 +298,12 @@ const CheckoutPage = () => {
                   </div>
                 </div>
 
+                {/* Address */}
                 <div>
                   <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
                     Street and Number *
                   </label>
+
                   <input
                     type="text"
                     value={company?.address || ""}
@@ -220,11 +312,13 @@ const CheckoutPage = () => {
                   />
                 </div>
 
+                {/* City + ZIP */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
                       City *
                     </label>
+
                     <input
                       type="text"
                       value={company?.city || ""}
@@ -232,10 +326,12 @@ const CheckoutPage = () => {
                       className="w-full px-4 py-2.5 border border-border bg-white rounded-lg focus:outline-none focus:border-primary text-sm font-medium"
                     />
                   </div>
+
                   <div>
                     <label className="block text-xs font-bold mb-1.5 uppercase text-dark/70">
                       Zip Code *
                     </label>
+
                     <input
                       type="text"
                       value={company?.zipCode || ""}
@@ -246,87 +342,11 @@ const CheckoutPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Payment Integration Panel Layer */}
-            <div className="bg-white border border-border rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
-              <h2 className="text-xl font-bold text-dark tracking-wide">
-                Select Payment Method
-              </h2>
-
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setPaymentGateway("upi")}
-                  className={`flex items-center justify-center gap-3 p-4 border rounded-xl font-bold transition text-sm ${paymentGateway === "upi" ? "border-primary bg-secondary/10 text-primary" : "border-border hover:bg-background text-dark"}`}
-                >
-                  <Smartphone size={18} /> UPI (GPay/PhonePe)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentGateway("card")}
-                  className={`flex items-center justify-center gap-3 p-4 border rounded-xl font-bold transition text-sm ${paymentGateway === "card" ? "border-primary bg-secondary/10 text-primary" : "border-border hover:bg-background text-dark"}`}
-                >
-                  <CreditCard size={18} /> Credit / Debit Card
-                </button>
-              </div>
-
-              {/* Dynamic Option Input Toggles depending on active selection context */}
-              <div className="p-4 bg-background rounded-xl border border-border text-sm">
-                {paymentGateway === "upi" ? (
-                  <div className="space-y-3">
-                    <label className="block text-xs font-bold uppercase text-dark/70">
-                      Enter UPI ID VPA *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="username@upi"
-                      className="w-full md:w-80 px-4 py-2 border border-border bg-white rounded-lg focus:outline-none focus:border-primary font-medium"
-                    />
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold mb-1 uppercase text-dark/70">
-                        Card Number *
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="xxxx xxxx xxxx xxxx"
-                        className="w-full px-4 py-2 border border-border bg-white rounded-lg focus:outline-none focus:border-primary font-medium"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold mb-1 uppercase text-dark/70">
-                          Expiry Date *
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="MM/YY"
-                          className="w-full px-4 py-2 border border-border bg-white rounded-lg focus:outline-none focus:border-primary font-medium"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold mb-1 uppercase text-dark/70">
-                          CVV *
-                        </label>
-                        <input
-                          type="password"
-                          placeholder="***"
-                          maxLength="3"
-                          className="w-full px-4 py-2 border border-border bg-white rounded-lg focus:outline-none focus:border-primary font-medium"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
-          {/* Right Column Section: Itemized Checkout Receipt Summary */}
+          {/* RIGHT COLUMN */}
           <div className="lg:col-span-5 bg-white border border-border rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
-            {/* Subscription Summary */}
+            {/* Subscription */}
             <div className="flex gap-4 items-start">
               <div className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
                 {plan?.maximumUsers}
@@ -338,7 +358,7 @@ const CheckoutPage = () => {
                 </h4>
 
                 <p className="text-xs text-dark/60 font-medium capitalize">
-                  {billing}
+                  {billingCycleLabelText}
                 </p>
               </div>
 
@@ -354,7 +374,6 @@ const CheckoutPage = () => {
             <div className="space-y-2 text-sm font-medium border-b border-border pb-4 text-dark/80">
               <div className="flex justify-between">
                 <span className="text-dark/60">Subtotal</span>
-
                 <span>
                   ₹
                   {subtotal.toLocaleString("en-IN", {
@@ -365,7 +384,6 @@ const CheckoutPage = () => {
 
               <div className="flex justify-between">
                 <span>SGST (9%)</span>
-
                 <span>
                   ₹
                   {sgst.toLocaleString("en-IN", {
@@ -376,7 +394,6 @@ const CheckoutPage = () => {
 
               <div className="flex justify-between">
                 <span>CGST (9%)</span>
-
                 <span>
                   ₹
                   {cgst.toLocaleString("en-IN", {
@@ -386,7 +403,7 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Grand Total */}
+            {/* Total */}
             <div className="flex justify-between items-baseline font-black text-dark border-b border-border pb-4">
               <span className="text-base">Total</span>
 
@@ -398,7 +415,7 @@ const CheckoutPage = () => {
               </span>
             </div>
 
-            {/* Sales Conditions */}
+            {/* Buttons */}
             <div className="space-y-4 pt-2">
               <button
                 onClick={handleConfirmPayment}
@@ -415,10 +432,11 @@ const CheckoutPage = () => {
               </button>
             </div>
           </div>
+          {/* END RIGHT COLUMN */}
         </div>
+        {/* END MAIN GRID */}
       </div>
     </div>
   );
 };
-
 export default CheckoutPage;
