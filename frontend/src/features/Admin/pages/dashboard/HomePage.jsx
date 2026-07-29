@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getDashboardDetails } from "../../../Auth/Services/companyService";
 import { getMySubscription } from "../../../../subscription/services/subscriptionService";
+import { getLatestNotification } from "../Notification/services/notificationService";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [subscription, setSubscription] = useState(null);
+  const [latestNotification, setLatestNotification] = useState(null);
   const [loadingSubscription, setLoadingSubscription] = useState(true);
 
   const [dashboard, setDashboard] = useState({
@@ -17,13 +19,15 @@ const HomePage = () => {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const [dashboardData, subscriptionData] = await Promise.all([
-          getDashboardDetails(),
-          getMySubscription(),
-        ]);
-
+        const [dashboardData, subscriptionData, notificationData] =
+          await Promise.all([
+            getDashboardDetails(),
+            getMySubscription(),
+            getLatestNotification(),
+          ]);
         setDashboard(dashboardData);
         setSubscription(subscriptionData);
+        setLatestNotification(notificationData.data);
       } catch (error) {
         console.error("Error fetching dashboard details:", error);
       } finally {
@@ -139,18 +143,35 @@ const HomePage = () => {
             </h2>
 
             <div className="bg-background rounded-xl p-5">
-              <p className="font-medium text-dark">
-                Your Professional Plan expires in 15 days.
-              </p>
+              {latestNotification ? (
+                <>
+                  <p className="font-medium text-dark">
+                    {latestNotification.title}
+                  </p>
 
-              <p className="text-dark/70 mt-2">
-                Renew your subscription to continue enjoying uninterrupted
-                access to all features.
-              </p>
+                  <p className="text-dark/70 mt-2">
+                    {latestNotification.message}
+                  </p>
 
-              <p className="mt-4 text-primary font-medium">
-                View all notifications →
-              </p>
+                  <p className="text-sm text-gray-500 mt-3">
+                    {new Date(latestNotification.createdAt).toLocaleString()}
+                  </p>
+
+                  <p className="mt-4 text-primary font-medium">
+                    View all notifications →
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="font-medium text-dark">
+                    No notifications available.
+                  </p>
+
+                  <p className="mt-4 text-primary font-medium">
+                    View all notifications →
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -177,15 +198,7 @@ const HomePage = () => {
               <p className="text-dark/70 mt-2">Update company information</p>
             </div>
 
-            <div
-              onClick={() => navigate("/admin/settings")}
-              className="bg-white rounded-xl border border-border shadow-sm p-6 cursor-pointer hover:shadow-md transition"
-            >
-              <h3 className="font-semibold text-dark">Settings</h3>
-
-              <p className="text-dark/70 mt-2">Configure account settings</p>
-            </div>
-
+          
             <div
               onClick={() => navigate("/admin/help")}
               className="bg-white rounded-xl border border-border shadow-sm p-6 cursor-pointer hover:shadow-md transition"
