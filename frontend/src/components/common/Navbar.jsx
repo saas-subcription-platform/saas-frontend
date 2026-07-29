@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
-import { getCurrentUser } from "../../subscription/services/userService";
+import { getCurrentUser } from "../../../employeeManagement/services/userService";
 
 function Navbar() {
   const navigate = useNavigate();
