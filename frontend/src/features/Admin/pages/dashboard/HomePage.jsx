@@ -91,6 +91,14 @@ const HomePage = () => {
                     <strong>Current Plan:</strong> {subscription.planName}
                   </p>
 
+                  <p className="flex items-center gap-2">
+                    <strong>Billing Cycle:</strong>
+
+                    <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+                      {subscription.billingCycle}
+                    </span>
+                  </p>
+
                   <p>
                     <strong>Price:</strong> ₹{subscription.amount}
                   </p>
@@ -103,10 +111,10 @@ const HomePage = () => {
                     <strong>Status:</strong>
 
                     <span
-                      className={`ml-2 font-semibold ${
+                      className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${
                         subscription.status === "ACTIVE"
-                          ? "text-green-600"
-                          : "text-red-600"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
                       }`}
                     >
                       {subscription.status}
@@ -116,18 +124,6 @@ const HomePage = () => {
                   <p>
                     <strong>Maximum Users:</strong> {subscription.maximumUsers}
                   </p>
-                </div>
-
-                <div className="mt-6">
-                  <h3 className="font-semibold text-dark mb-3">
-                    Included Features
-                  </h3>
-
-                  <ul className="space-y-2 text-dark/80">
-                    {subscription.features?.map((feature) => (
-                      <li key={feature}>✓ {feature}</li>
-                    ))}
-                  </ul>
                 </div>
               </>
             ) : (

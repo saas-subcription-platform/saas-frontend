@@ -62,7 +62,7 @@ const EmployeeTopBar = () => {
           </div>
 
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-52 bg-white border border-border rounded-lg shadow-lg z-50">
+            <div className="absolute right-0 mt-2 w-70 bg-white border border-border rounded-lg shadow-lg z-50">
 
               <p className="w-full text-left px-4 py-3">
                 {user?.email}
