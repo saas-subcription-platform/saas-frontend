@@ -42,11 +42,13 @@ const RenewalPage = () => {
         if (currentPlan) {
           setSelectedPlan(currentPlan);
 
-          const activePricing = currentPlan.pricingOptions.find(
-            (pricing) => pricing.active,
+          const currentPricing = currentPlan.pricingOptions.find(
+            (pricing) =>
+              pricing.active &&
+              pricing.billingCycle === subscriptionData.billingCycle,
           );
 
-          setSelectedPricing(activePricing);
+          setSelectedPricing(currentPricing);
         }
       } catch (error) {
         console.error(error);
@@ -67,34 +69,16 @@ const RenewalPage = () => {
     toast.error("Renewal cancelled");
   };
 
-  // const handleProceedPay = (plan) => {
-  //   const pricing = plan.pricingOptions.find((p) => p.active);
-
-  //   navigate(`/checkout?plan=${plan.id}&billing=${pricing?.billingCycle}`, {
-  //     state: {
-  //       subscription,
-  //       plan,
-  //       pricing,
-  //     },
-  //   });
-  // };
-
-  // if (loading) {
-  //   return (
-  //     <AdminLayout>
-  //       <div className="text-center py-20">Loading renewal details...</div>
-  //     </AdminLayout>
-  //   );
-  // }
-
   const handleProceedPay = (plan) => {
     const pricing =
-      plan.pricingOptions.find((p) => p.active) ?? plan.pricingOptions[0];
+      plan.pricingOptions.find(
+        (p) => p.active && p.billingCycle === subscription.billingCycle,
+      ) ?? plan.pricingOptions.find((p) => p.active);
 
     console.log("Proceed clicked");
-    console.log(subscription);
-    console.log(plan);
-    console.log(pricing);
+    console.log("Subscription =", subscription);
+    console.log("Billing Cycle =", subscription.billingCycle);
+    console.log("Selected Pricing =", pricing);
 
     navigate("/payment", {
       state: {
@@ -194,7 +178,10 @@ const RenewalPage = () => {
           {showPlans && (
             <div className="mt-8 grid md:grid-cols-3 gap-6">
               {plans.map((plan) => {
-                const pricing = plan.pricingOptions.find((p) => p.active);
+                const pricing = plan.pricingOptions.find(
+                  (p) =>
+                    p.active && p.billingCycle === subscription.billingCycle,
+                );
 
                 return (
                   <div
