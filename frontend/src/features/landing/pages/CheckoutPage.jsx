@@ -9,6 +9,7 @@ import {
   renewSubscription,
   createSubscription,
   changeSubscriptionPlan,
+  getMySubscription,
 } from "../../../subscription/services/subscriptionService";
 import { processRazorpayPayment } from "../../../paymentManagement/services/razorpayService";
 
@@ -21,23 +22,29 @@ const CheckoutPage = () => {
 
   const [searchParams] = useSearchParams();
 
+  // -------------------------
+  // Query Parameters
+  // -------------------------
   const planId = searchParams.get("plan");
 
-  const billing = searchParams.get("billing");
-
-  const isYearly = billing === "YEARLY";
-
+  // -------------------------
+  // Renewal Data
+  // -------------------------
   const renewalData = location.state;
 
   const renewalSubscription = renewalData?.subscription;
   const renewalPlan = renewalData?.plan;
   const renewalPricing = renewalData?.pricing;
 
-  console.log("planId =", planId);
-  console.log("billing =", billing);
-
-  // State to toggle active payment options
+  // -------------------------
+  // States
+  // -------------------------
   const [paymentGateway, setPaymentGateway] = useState("upi");
+
+  const [existingSubscription, setExistingSubscription] = useState(
+    renewalSubscription || null,
+  );
+
   const [company, setCompany] = useState(
     renewalSubscription
       ? {
@@ -46,12 +53,17 @@ const CheckoutPage = () => {
         }
       : null,
   );
+
   const [plan, setPlan] = useState(renewalPlan || null);
 
-  const billingCycleLabelText = isYearly ? "per year" : "per month";
+  console.log("planId =", planId);
 
+  // -------------------------
+  // Load Company Details
+  // -------------------------
   useEffect(() => {
     if (location.state?.plan) return;
+
     const loadCompany = async () => {
       const token = localStorage.getItem("token");
 
@@ -63,7 +75,6 @@ const CheckoutPage = () => {
         console.log("Company:", data);
 
         setCompany(data);
-        console.log("Company API Response:", data);
       } catch (error) {
         console.error(error);
       }
@@ -72,17 +83,38 @@ const CheckoutPage = () => {
     loadCompany();
   }, []);
 
+  // -------------------------
+  // Load Existing Subscription
+  // -------------------------
   useEffect(() => {
-    const loadPlan = async () => {
-      if (!planId) return;
+    if (renewalSubscription) return;
 
+    const loadExistingSubscription = async () => {
+      try {
+        const subscription = await getMySubscription();
+
+        setExistingSubscription(subscription);
+      } catch (error) {
+        setExistingSubscription(null);
+      }
+    };
+
+    loadExistingSubscription();
+  }, []);
+
+  // -------------------------
+  // Load Selected Plan
+  // -------------------------
+  useEffect(() => {
+    if (!planId) return;
+
+    const loadPlan = async () => {
       try {
         const data = await getSubscriptionPlanById(planId);
 
         console.log("Selected Plan:", data);
 
         setPlan(data);
-        console.log("Loaded Plan:", data);
       } catch (error) {
         console.error(error);
       }
@@ -91,14 +123,32 @@ const CheckoutPage = () => {
     loadPlan();
   }, [planId]);
 
+  // -------------------------
+  // Selected Pricing
+  // -------------------------
   const selectedPricing = useMemo(() => {
-    if (location.state?.pricing) {
-      return location.state.pricing;
+    // Renewal Flow
+    if (renewalPricing) {
+      return renewalPricing;
     }
 
-    return plan?.pricingOptions?.find((item) => item.billingCycle === billing);
-  }, [plan, billing, location.state]);
+    // Landing Page Flow
+    const billing = searchParams.get("billing");
 
+    return plan?.pricingOptions?.find(
+      (pricing) => pricing.billingCycle === billing,
+    );
+  }, [renewalPricing, plan, searchParams]);
+
+  // -------------------------
+  // Billing Label
+  // -------------------------
+  const billingCycleLabelText =
+    selectedPricing?.billingCycle === "YEARLY" ? "Per Year" : "Per Month";
+
+  // -------------------------
+  // Price Calculation
+  // -------------------------
   const subtotal = selectedPricing?.price ?? 0;
 
   const sgst = subtotal * 0.09;
@@ -115,7 +165,7 @@ const CheckoutPage = () => {
     cgst,
     total,
   });
-
+  
   const handleConfirmPayment = async () => {
     try {
       if (!plan || !selectedPricing || !company) {
@@ -126,12 +176,10 @@ const CheckoutPage = () => {
       let response;
       let subscriptionId;
 
-      console.log("renewalSubscription =", renewalSubscription);
+      console.log("existingSubscription =", existingSubscription);
 
-      if (renewalSubscription?.subscriptionId) {
-        // This company already has a subscription — never call the
-        // subscribe/create endpoint again, or the backend returns 409.
-        const isSamePlan = renewalSubscription.planName === plan.planName;
+      if (existingSubscription?.subscriptionId) {
+        const isSamePlan = existingSubscription.planName === plan.planName;
 
         console.log(
           isSamePlan
@@ -139,21 +187,22 @@ const CheckoutPage = () => {
             : "Changing plan on existing subscription",
         );
 
-        console.log({
-          planId: plan.id,
-          pricingId: selectedPricing.id,
-        });
-
-        response = isSamePlan
-          ? await renewSubscription(renewalSubscription.subscriptionId)
-          : await changeSubscriptionPlan(renewalSubscription.subscriptionId, {
+        if (isSamePlan) {
+          response = await renewSubscription(
+            existingSubscription.subscriptionId,
+          );
+        } else {
+          response = await changeSubscriptionPlan(
+            existingSubscription.subscriptionId,
+            {
               planId: plan.id,
               pricingId: selectedPricing.id,
-            });
+            },
+          );
+        }
 
-        subscriptionId = renewalSubscription.subscriptionId;
+        subscriptionId = existingSubscription.subscriptionId;
       } else {
-        // Brand-new subscription for a company that doesn't have one yet.
         const request = {
           companyId: company.company_id,
           planId: plan.id,
@@ -164,20 +213,16 @@ const CheckoutPage = () => {
 
         response = await createSubscription(request);
 
-        console.log("Subscription Created:", response);
-
         subscriptionId = response.data?.subscriptionId ?? response.data?.id;
       }
 
       console.log("Subscription ID:", subscriptionId);
 
-      // Open Razorpay
       await processRazorpayPayment({
         subscriptionId,
         amount: total,
         paymentGateway,
 
-        // Runs only after successful payment verification
         onSuccess: () => {
           toast.success("Payment successful!");
           navigate("/payment-success");
@@ -188,6 +233,7 @@ const CheckoutPage = () => {
       toast.error("Failed to process payment");
     }
   };
+
   return (
     <div className="bg-background min-h-screen text-dark p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto">

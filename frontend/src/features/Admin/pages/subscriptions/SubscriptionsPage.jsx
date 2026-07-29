@@ -111,6 +111,10 @@ const SubscriptionDetailsPage = () => {
               </h3>
 
               <p className="text-dark/70 mt-2">
+                {subscription.billingCycle} Plan
+              </p>
+
+              <p className="text-dark/70 mt-2">
                 Subscription ID : #{subscription.subscriptionId}
               </p>
             </div>
@@ -150,6 +154,10 @@ const SubscriptionDetailsPage = () => {
               <div className="space-y-3">
                 <p>
                   <strong>Plan:</strong> {subscription.planName}
+                </p>
+
+                <p>
+                  <strong>Billing Cycle:</strong> {subscription.billingCycle}
                 </p>
 
                 <p>
@@ -203,7 +211,7 @@ const SubscriptionDetailsPage = () => {
                   key={feature}
                   className="bg-background rounded-xl p-4 border border-border"
                 >
-                   {feature}
+                  {feature}
                 </div>
               ))}
             </div>
@@ -229,6 +237,10 @@ const SubscriptionDetailsPage = () => {
 
                 <p className="font-bold text-primary text-lg">
                   ₹{subscription.amount}
+                </p>
+
+                <p className="text-sm text-dark/60 mt-1">
+                  {subscription.billingCycle}
                 </p>
               </div>
             </div>
