@@ -1,73 +1,89 @@
-import { Bell } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../../features/Auth/services/authService";
-
+import { getCurrentUser } from "../../../../employeeManagement/services/userService";
 
 const EmployeeTopBar = () => {
+  const [showMenu, setShowMenu] = useState(false);
+  const [user, setUser] = useState(null);
 
-    const [showMenu, setShowMenu] = useState(false);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-      const handleLogout = () => {
-        logout();
-        navigate("/login", { replace: true });
-      };
-    
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const data = await getCurrentUser();
+        setUser(data);
+      } catch (error) {
+        console.error("Failed to fetch current user:", error);
+      }
+    };
 
-    return (
-        <header className="h-20 bg-white border-b border-border shadow-sm px-8 flex items-center justify-between">
+    fetchCurrentUser();
+  }, []);
 
-            <h2 className="text-2xl font-bold text-dark">
-                Employee Dashboard
-            </h2>
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
-            <div className="flex items-center gap-5">
+  const fullName = user
+    ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+    : "";
 
-                
+  const initials = user
+    ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase()
+    : "";
 
-                <div
-                    className="relative cursor-pointer"
-                    onClick={() => setShowMenu(!showMenu)}
-                >
+  return (
+    <header className="h-20 bg-white border-b border-border shadow-sm px-8 flex items-center justify-between">
 
-                    <div className="flex items-center gap-2">
+      <h2 className="text-2xl font-bold text-dark">
+        Employee Dashboard
+      </h2>
 
-                        <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
-                            JD
-                        </div>
+      <div className="flex items-center gap-5">
 
-                        <span>John Doe</span>
+        <div
+          className="relative cursor-pointer"
+          onClick={() => setShowMenu(!showMenu)}
+        >
 
-                    </div>
+          <div className="flex items-center gap-2">
 
-                    {showMenu && (
-
-                        <div className="absolute right-0 mt-2 w-44 bg-white border border-border rounded-lg shadow-lg">
-
-                            <p
-                                className="w-full text-left px-4 py-3 "
-                            >
-                                johndoe@gmail.com
-                            </p>
-
-                            <button
-                                className="w-full text-left px-4 py-3 hover:bg-background"
-                                onClick={handleLogout}
-                            >
-                                Logout
-                            </button>
-
-                        </div>
-
-                    )}
-
-                </div>
-
+            <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
+              {initials}
             </div>
 
-        </header>
-    );
+            <span>
+              {fullName}
+            </span>
+
+          </div>
+
+          {showMenu && (
+            <div className="absolute right-0 mt-2 w-52 bg-white border border-border rounded-lg shadow-lg z-50">
+
+              <p className="w-full text-left px-4 py-3">
+                {user?.email}
+              </p>
+
+              <button
+                className="w-full text-left px-4 py-3 hover:bg-background"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+
+            </div>
+          )}
+
+        </div>
+
+      </div>
+
+    </header>
+  );
 };
 
 export default EmployeeTopBar;
