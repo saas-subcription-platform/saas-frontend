@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "../../../../../api/api";
 
 // Get all users
 export const getAllUsers = async () => {

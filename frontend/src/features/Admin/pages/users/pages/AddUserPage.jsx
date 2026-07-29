@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { addUser } from "../services/userService";
-import { getCompanyProfile } from "../../../../Auth/Services/companyService";
 
 const AddUserPage = () => {
   const navigate = useNavigate();
@@ -18,44 +17,9 @@ const AddUserPage = () => {
   const [role, setRole] = useState("EMPLOYEE");
   const [status, setStatus] = useState("ACTIVE");
 
-  const [companyId, setCompanyId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch companyId on component mount
-  useEffect(() => {
-    const fetchCompanyData = async () => {
-      try {
-        const companyData = await getCompanyProfile();
-
-        console.log("=== FETCHED COMPANY DATA ===", companyData);
-
-        // Check common ID field names or extract from nested user object
-        // 1. Updated line below to extract company_id correctly:
-        const companyId =
-          companyData?.company_id || companyData?.companyId || companyData?.id;
-
-        console.log("Extracted Company ID:", companyId);
-        if (!companyId) {
-          toast.error("Company details not loaded yet. Please try again.");
-          return;
-        }
-        setCompanyId(companyId);
-      } catch (error) {
-        console.error("Failed to fetch company profile:", error);
-        toast.error("Could not load company details");
-      }
-    };
-
-    fetchCompanyData();
-  }, []);
-
   const handleAddUser = async () => {
-    // Basic validation check for companyId
-    if (!companyId) {
-      toast.error("Company details not loaded yet. Please try again.");
-      return;
-    }
-
     try {
       setLoading(true);
 
@@ -69,7 +33,6 @@ const AddUserPage = () => {
         department,
         role,
         status,
-        companyId: Number(companyId),
       };
 
       console.log("========== USER DATA SENT ==========");

@@ -1,4 +1,4 @@
-import api from "../../users/services/api";
+import api from "../../../../../api/api";
 
 
 // Get logged-in user's notifications
