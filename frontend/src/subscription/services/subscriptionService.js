@@ -10,8 +10,14 @@ export const getMySubscription = async () => {
   return response.data.data;
 };
 
-export const renewSubscription = (subscriptionId) =>
-  api.post(`/api/subscriptions/${subscriptionId}/renew`);
+export const renewSubscription = async (subscriptionId, data) => {
+  const response = await api.post(
+    `/api/subscriptions/${subscriptionId}/renew`,
+    data
+  );
+
+  return response.data;
+};
 
 export const changeSubscriptionPlan = async (
   subscriptionId,

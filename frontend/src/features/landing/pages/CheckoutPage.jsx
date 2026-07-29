@@ -165,7 +165,7 @@ const CheckoutPage = () => {
     cgst,
     total,
   });
-  
+
   const handleConfirmPayment = async () => {
     try {
       if (!plan || !selectedPricing || !company) {
@@ -173,67 +173,73 @@ const CheckoutPage = () => {
         return;
       }
 
-      let response;
-      let subscriptionId;
-
-      console.log("existingSubscription =", existingSubscription);
-
-      if (existingSubscription?.subscriptionId) {
-        const isSamePlan = existingSubscription.planName === plan.planName;
-
-        console.log(
-          isSamePlan
-            ? "Renewing existing subscription"
-            : "Changing plan on existing subscription",
-        );
-
-        if (isSamePlan) {
-          response = await renewSubscription(
-            existingSubscription.subscriptionId,
-          );
-        } else {
-          response = await changeSubscriptionPlan(
-            existingSubscription.subscriptionId,
-            {
-              planId: plan.id,
-              pricingId: selectedPricing.id,
-            },
-          );
-        }
-
-        subscriptionId = existingSubscription.subscriptionId;
-      } else {
-        const request = {
-          companyId: company.company_id,
-          planId: plan.id,
-          pricingId: selectedPricing.id,
-        };
-
-        console.log("Subscription Request:", request);
-
-        response = await createSubscription(request);
-
-        subscriptionId = response.data?.subscriptionId ?? response.data?.id;
-      }
-
-      console.log("Subscription ID:", subscriptionId);
+      console.log("Opening Razorpay...");
 
       await processRazorpayPayment({
-        subscriptionId,
         amount: total,
         paymentGateway,
 
-        onSuccess: () => {
-          toast.success("Payment successful!");
-          navigate("/payment-success");
+        onSuccess: async ({ paymentResponse, paymentId }) => {
+          try {
+            console.log("Payment verified successfully.");
+            console.log("Payment ID:", paymentId);
+            console.log("Payment Response:", paymentResponse);
+
+            if (existingSubscription?.subscriptionId) {
+              const isSamePlan =
+                existingSubscription.planName === plan.planName;
+
+              console.log(
+                isSamePlan
+                  ? "Renewing existing subscription"
+                  : "Changing existing subscription plan",
+              );
+
+              if (isSamePlan) {
+                await renewSubscription(existingSubscription.subscriptionId, {
+                  paymentId: paymentId,
+                });
+              } else {
+                await changeSubscriptionPlan(
+                  existingSubscription.subscriptionId,
+                  {
+                    planId: plan.id,
+                    pricingId: selectedPricing.id,
+                    paymentId: paymentId,
+                  },
+                );
+              }
+            } else {
+              const request = {
+                companyId: company.company_id,
+                planId: plan.id,
+                pricingId: selectedPricing.id,
+                paymentId: paymentId,
+              };
+
+              console.log("Creating new subscription:", request);
+
+              await createSubscription(request);
+            }
+
+            toast.success("Payment successful!");
+            navigate("/payment-success");
+          } catch (error) {
+            console.error("Subscription operation failed:", error);
+            toast.error("Payment succeeded but subscription update failed.");
+          }
+        },
+
+        onFailure: () => {
+          console.log("Payment failed or cancelled.");
+          toast.error("Payment failed.");
         },
       });
     } catch (error) {
       console.error("Checkout failed:", error);
-      toast.error("Failed to process payment");
+      toast.error("Unable to initiate payment.");
     }
   };
-
   return (
     <div className="bg-background min-h-screen text-dark p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto">
