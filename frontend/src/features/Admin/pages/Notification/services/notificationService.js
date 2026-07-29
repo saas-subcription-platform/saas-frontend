@@ -1,31 +1,27 @@
 import api from "../../../../../api/api";
 
-
-// Get logged-in user's notifications
+// Get all notifications of logged-in admin's company
 export const getNotifications = async () => {
-    return await api.get("/notifications");
+    return await api.get("/admin/notifications");
 };
-
 
 // Mark single notification as read
 export const markNotificationRead = async (notificationId) => {
     return await api.patch(
-        `/notifications/${notificationId}/read`
+        `/admin/notifications/read/${notificationId}`
     );
 };
-
 
 // Mark all notifications as read
 export const markAllRead = async () => {
     return await api.patch(
-        "/notifications/read-all"
+        "/admin/notifications/read-all"
     );
 };
 
-
-// Clear logged-in user's notifications
+// Clear all notifications
 export const clearAllNotifications = async () => {
     return await api.delete(
-        "/notifications/clear"
+        "/admin/notifications/clear"
     );
 };
