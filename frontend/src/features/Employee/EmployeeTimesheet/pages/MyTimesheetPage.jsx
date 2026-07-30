@@ -1,16 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getMyTimesheets } from "../services/timesheetService";
 
 import TimesheetTable from "../components/TimesheetTable";
-import { timesheets as initialTimesheets } from "../constants/timesheets";
 import TimesheetHeader from "../components/TimesheetHeader";
 
 const MyTimesheetsPage = () => {
 
     const navigate = useNavigate();
 
-    const [timesheets, setTimesheets] = useState(initialTimesheets);
+    const [timesheets, setTimesheets] = useState([]);
     const [statusFilter, setStatusFilter] = useState("ALL");
+
+    // Fetch timesheets from backend
+    useEffect(() => {
+        const fetchTimesheets = async () => {
+            try {
+                const data = await getMyTimesheets();
+                setTimesheets(data);
+            } catch (error) {
+                console.error("Failed to fetch timesheets:", error);
+            }
+        };
+
+        fetchTimesheets();
+    }, []);
 
     const filteredTimesheets =
         statusFilter === "ALL"
@@ -24,7 +38,6 @@ const MyTimesheetsPage = () => {
 
             {/* Timesheet Module Header */}
             <TimesheetHeader />
-
 
             {/* Page Content */}
             <div
@@ -60,7 +73,6 @@ const MyTimesheetsPage = () => {
 
                 </div>
 
-
                 {/* Status Filter */}
                 <div className="bg-white rounded-xl shadow-md p-4">
 
@@ -77,31 +89,16 @@ const MyTimesheetsPage = () => {
                                 setStatusFilter(e.target.value)
                             }
                         >
-                            <option value="ALL">
-                                All
-                            </option>
-
-                            <option value="DRAFT">
-                                Draft
-                            </option>
-
-                            <option value="SUBMITTED">
-                                Submitted
-                            </option>
-
-                            <option value="APPROVED">
-                                Approved
-                            </option>
-
-                            <option value="REJECTED">
-                                Rejected
-                            </option>
+                            <option value="ALL">All</option>
+                            <option value="Draft">Draft</option>
+                            <option value="Submitted">Submitted</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
                         </select>
 
                     </div>
 
                 </div>
-
 
                 {/* Timesheet Table */}
                 <TimesheetTable
