@@ -5,6 +5,7 @@ import messages from "../constants/messages";
 import CreateTeamModal from "./CreateTeamModel";
 
 const ConversationPanel = ({
+  currentUser,
   teams,
   users,
   selectedConversation,

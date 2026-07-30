@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { getCurrentUser } from "../../../../../employeeManagement/services/userService";
+
 import Sidebar from "../components/Sidebar";
 import ConversationPanel from "../components/ConversationPanel";
 import ConversationHeader from "../components/ConversationHeader";
@@ -19,7 +21,8 @@ import {
 const TeamCollaborationPage = () => {
   const [message, setMessage] = useState("");
   const [teams, setTeams] = useState([]);
-  
+  const [currentUser, setCurrentUser] = useState(null);
+
   const [selectedConversation, setSelectedConversation] = useState({
     id: "general",
     name: "General",
@@ -29,9 +32,31 @@ const TeamCollaborationPage = () => {
     type: "company",
   });
 
+  console.log(currentUser);
+
+  useEffect(() => {
+    initializePage();
+  }, []);
+
   useEffect(() => {
     initializeTeam();
   }, []);
+
+  const initializePage = async () => {
+    try {
+      const user = await getCurrentUser();
+
+      setCurrentUser(user);
+
+      await createGeneralTeam();
+
+      const teamList = await getTeams();
+
+      setTeams(teamList);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const initializeTeam = async () => {
     try {
@@ -83,9 +108,10 @@ const TeamCollaborationPage = () => {
 
   return (
     <div className="h-screen flex bg-gray-100">
-      <Sidebar />
+      <Sidebar currentUser={currentUser} />
 
       <ConversationPanel
+        currentUser={currentUser}
         teams={teams}
         users={users}
         selectedConversation={selectedConversation}
