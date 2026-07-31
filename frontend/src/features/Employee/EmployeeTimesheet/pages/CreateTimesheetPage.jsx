@@ -9,7 +9,8 @@ import { toast } from "react-toastify";
 import {
     createTimesheet,
     getTimesheetById,
-    updateTimesheet
+    updateTimesheet,
+    submitTimesheet
 } from "../services/timesheetService";
 
 import { getCurrentUser } from "../../../../../employeeManagement/services/userService";
@@ -146,6 +147,9 @@ const CreateTimesheetPage = () => {
 
     const getWeekEndDate = (startDate) => {
 
+        if (!startDate)
+            return "";
+
         const endDate = new Date(startDate);
 
         endDate.setDate(endDate.getDate() + 6);
@@ -179,6 +183,11 @@ const CreateTimesheetPage = () => {
     const handleSaveDraft = async () => {
 
         try {
+
+            if (!weekStartDate) {
+                toast.error("Please select a week starting date.");
+                return;
+            }
 
             const request = buildRequest();
 
@@ -216,6 +225,11 @@ const CreateTimesheetPage = () => {
 
         try {
 
+            if (!weekStartDate) {
+                toast.error("Please select a week starting date.");
+                return;
+            }
+
             const request = buildRequest();
 
             if (isEditMode) {
@@ -226,11 +240,21 @@ const CreateTimesheetPage = () => {
                     request
                 );
 
+                await submitTimesheet(
+                    id,
+                    employeeId
+                );
+
             } else {
 
-                await createTimesheet(
+                const created = await createTimesheet(
                     employeeId,
                     request
+                );
+
+                await submitTimesheet(
+                    created.id,
+                    employeeId
                 );
 
             }

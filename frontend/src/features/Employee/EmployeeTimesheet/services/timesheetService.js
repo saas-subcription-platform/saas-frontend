@@ -33,3 +33,14 @@ export const updateTimesheet = async (id, employeeId, timesheet) => {
     );
     return response.data;
 };
+
+// submit timesheet
+export const submitTimesheet = async (id, employeeId) => {
+
+    const response = await timesheetApi.patch(
+        `/timesheets/${id}/submit?employeeId=${employeeId}`
+    );
+
+    return response.data;
+
+};
