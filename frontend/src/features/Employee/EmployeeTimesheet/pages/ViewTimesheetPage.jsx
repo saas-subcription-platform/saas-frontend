@@ -1,19 +1,46 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import TimesheetHeader from "../components/TimesheetHeader";
 import StatusBadge from "../components/StatusBadge";
-import { timesheets } from "../constants/timesheets";
+
+import { getTimesheetById } from "../services/timesheetService";
+import { getCurrentUser } from "../../../../../employeeManagement/services/userService";
 
 const ViewTimesheetPage = () => {
 
     const navigate = useNavigate();
     const { id } = useParams();
 
-    const timesheet = timesheets.find(
-        (item) => item.id === Number(id)
-    );
+    const [timesheet, setTimesheet] = useState(null);
+
+    useEffect(() => {
+
+        const fetchTimesheet = async () => {
+
+            try {
+
+                const user = await getCurrentUser();
+                const data = await getTimesheetById(id, user.id);
+
+                setTimesheet(data);
+
+            } catch (error) {
+
+                console.error("Failed to fetch timesheet:", error);
+
+            }
+
+        };
+
+        fetchTimesheet();
+
+    }, [id]);
 
     if (!timesheet) {
+
         return (
+
             <div className="min-h-screen bg-gray-50">
 
                 <TimesheetHeader />
@@ -46,10 +73,13 @@ const ViewTimesheetPage = () => {
                 </div>
 
             </div>
+
         );
+
     }
 
     return (
+
         <div className="min-h-screen bg-gray-50">
 
             <TimesheetHeader />
@@ -67,6 +97,7 @@ const ViewTimesheetPage = () => {
                 <div className="flex justify-between items-center">
 
                     <div>
+
                         <h1 className="text-3xl font-bold text-dark">
                             Timesheet Details
                         </h1>
@@ -74,6 +105,7 @@ const ViewTimesheetPage = () => {
                         <p className="text-gray-500 mt-1">
                             View your submitted work details.
                         </p>
+
                     </div>
 
                     <button
@@ -87,23 +119,26 @@ const ViewTimesheetPage = () => {
 
                 </div>
 
-
                 {/* Summary */}
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
 
                     <div className="grid grid-cols-4 gap-6">
 
                         <div>
+
                             <p className="text-gray-500 text-sm">
                                 Week
                             </p>
 
                             <p className="font-semibold mt-1">
-                                {timesheet.week}
+                                {new Date(timesheet.weekStartDate).toLocaleDateString("en-GB")} -{" "}
+                                {new Date(timesheet.weekEndDate).toLocaleDateString("en-GB")}
                             </p>
+
                         </div>
 
                         <div>
+
                             <p className="text-gray-500 text-sm">
                                 Total Hours
                             </p>
@@ -111,9 +146,11 @@ const ViewTimesheetPage = () => {
                             <p className="font-semibold mt-1">
                                 {timesheet.totalHours} hrs
                             </p>
+
                         </div>
 
                         <div>
+
                             <p className="text-gray-500 text-sm">
                                 Status
                             </p>
@@ -121,22 +158,26 @@ const ViewTimesheetPage = () => {
                             <div className="mt-2">
                                 <StatusBadge status={timesheet.status} />
                             </div>
+
                         </div>
 
                         <div>
+
                             <p className="text-gray-500 text-sm">
                                 Submitted On
                             </p>
 
                             <p className="font-semibold mt-1">
-                                {timesheet.submittedOn || "Not Submitted"}
+                                {timesheet.submittedOn
+                                    ? new Date(timesheet.submittedOn).toLocaleDateString("en-GB")
+                                    : "Not Submitted"}
                             </p>
+
                         </div>
 
                     </div>
 
                 </div>
-
 
                 {/* Work Entries */}
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -154,6 +195,7 @@ const ViewTimesheetPage = () => {
                         <thead className="bg-gray-50">
 
                             <tr>
+
                                 <th className="text-left px-5 py-3">
                                     Day
                                 </th>
@@ -173,6 +215,7 @@ const ViewTimesheetPage = () => {
                                 <th className="text-left px-5 py-3">
                                     Description
                                 </th>
+
                             </tr>
 
                         </thead>
@@ -191,7 +234,7 @@ const ViewTimesheetPage = () => {
                                     </td>
 
                                     <td className="px-5 py-4">
-                                        {entry.project}
+                                        {entry.projectName}
                                     </td>
 
                                     <td className="px-5 py-4">
@@ -214,7 +257,6 @@ const ViewTimesheetPage = () => {
 
                     </table>
 
-
                     {!timesheet.entries?.length && (
 
                         <div className="p-6 text-gray-500 text-center">
@@ -228,7 +270,9 @@ const ViewTimesheetPage = () => {
             </div>
 
         </div>
+
     );
+
 };
 
 export default ViewTimesheetPage;

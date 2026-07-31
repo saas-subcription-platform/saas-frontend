@@ -4,6 +4,8 @@ import { getMyTimesheets } from "../services/timesheetService";
 
 import TimesheetTable from "../components/TimesheetTable";
 import TimesheetHeader from "../components/TimesheetHeader";
+import { getCurrentUser } from "../../../../../employeeManagement/services/userService";
+
 
 const MyTimesheetsPage = () => {
 
@@ -14,16 +16,27 @@ const MyTimesheetsPage = () => {
 
     // Fetch timesheets from backend
     useEffect(() => {
+
         const fetchTimesheets = async () => {
+
             try {
-                const data = await getMyTimesheets();
+
+                const user = await getCurrentUser();
+
+                const data = await getMyTimesheets(user.userId);
+
                 setTimesheets(data);
+
             } catch (error) {
+
                 console.error("Failed to fetch timesheets:", error);
+
             }
+
         };
 
         fetchTimesheets();
+
     }, []);
 
     const filteredTimesheets =
