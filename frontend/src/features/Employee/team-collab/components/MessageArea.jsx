@@ -1,24 +1,28 @@
 import MessageBubble from "./MessageBubble";
 
-const MessageArea = ({ conversation }) => {
+const MessageArea = ({
+  messages,
+  currentUser,
+  conversation,
+  companyUsers,
+}) => {
   return (
     <div className="flex-1 overflow-y-auto bg-slate-50 px-8 py-8">
-
       <p className="text-center text-gray-400 mb-8">
         Today
       </p>
 
       <div className="space-y-8">
-
-        {(conversation.messages || []).map((message) => (
+        {(messages || []).map((message) => (
           <MessageBubble
-            key={message.id}
+            key={message.messageId}
             message={message}
+            currentUser={currentUser}
+            conversation={conversation}
+            companyUsers={companyUsers}
           />
         ))}
-
       </div>
-
     </div>
   );
 };

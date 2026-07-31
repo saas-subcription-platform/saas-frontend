@@ -27,17 +27,6 @@ const Sidebar = ({ currentUser }) => {
         <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl font-bold shadow">
           TC
         </div>
-
-        {/* Navigation */}
-        <div className="flex flex-col gap-5">
-          <button className="w-12 h-12 rounded-xl hover:bg-white/10 flex items-center justify-center transition">
-            <MessageSquare size={22} />
-          </button>
-
-          <button className="w-12 h-12 rounded-xl hover:bg-white/10 flex items-center justify-center transition">
-            <Users size={22} />
-          </button>
-        </div>
       </div>
 
       {/* Profile */}

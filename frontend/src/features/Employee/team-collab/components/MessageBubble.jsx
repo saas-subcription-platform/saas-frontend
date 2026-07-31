@@ -1,33 +1,43 @@
-const MessageBubble = ({ message }) => {
+const MessageBubble = ({
+  message,
+  currentUser,
+  conversation,
+  companyUsers = [],
+}) => {
+  const mine = currentUser?.userId === message.senderId;
+
+  const sender = companyUsers.find(
+    (user) => user.userId === message.senderId
+  );
+
+  const senderName = sender
+    ? `${sender.firstName} ${sender.lastName}`
+    : "Unknown User";
+
   return (
-    <div
-      className={`flex ${
-        message.mine ? "justify-end" : "justify-start"
-      }`}
-    >
+    <div className={`flex ${mine ? "justify-end" : "justify-start"}`}>
       <div
         className={`max-w-md rounded-2xl px-5 py-3 shadow ${
-          message.mine
-            ? "bg-primary text-white"
-            : "bg-white"
+          mine ? "bg-primary text-white" : "bg-white"
         }`}
       >
-        {!message.mine && (
+        {!mine && (
           <h4 className="font-semibold mb-1">
-            {message.sender}
+            {senderName}
           </h4>
         )}
 
-        <p>{message.text}</p>
+        <p>{message.content}</p>
 
         <p
           className={`text-xs mt-2 ${
-            message.mine
-              ? "text-white/70"
-              : "text-gray-400"
+            mine ? "text-white/70" : "text-gray-400"
           }`}
         >
-          {message.time}
+          {new Date(message.sentAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </p>
       </div>
     </div>
