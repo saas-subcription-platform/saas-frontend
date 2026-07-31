@@ -11,11 +11,9 @@ const ConversationPanel = ({
   selectedConversation,
   setSelectedConversation,
   loadTeamMembers,
+  onCreateTeam,
 }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const createTeam = (team) => {
-    console.log("Create Team:", team);
-  };
 
   return (
     <aside className="w-85 h-screen bg-white border-r border-gray-200 flex flex-col">
@@ -137,7 +135,10 @@ const ConversationPanel = ({
       <CreateTeamModal
         open={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onCreate={createTeam}
+        onCreate={async (teamData) => {
+          await onCreateTeam(teamData);
+          setShowCreateModal(false);
+        }}
       />
     </aside>
   );

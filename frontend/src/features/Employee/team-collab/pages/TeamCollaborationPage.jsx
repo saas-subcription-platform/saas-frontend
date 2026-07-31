@@ -16,6 +16,7 @@ import {
   createGeneralTeam,
   getTeams,
   getTeamMembers,
+  createTeam,
 } from "../service/teamService";
 
 const TeamCollaborationPage = () => {
@@ -84,6 +85,27 @@ const TeamCollaborationPage = () => {
       return [];
     }
   };
+  const handleCreateTeam = async (teamData) => {
+    try {
+      const createdTeam = await createTeam(teamData);
+
+      const updatedTeams = await getTeams();
+      setTeams(updatedTeams);
+
+      const members = await getTeamMembers(createdTeam.teamId);
+
+      setSelectedConversation({
+        id: createdTeam.teamId,
+        name: createdTeam.name,
+        description: createdTeam.description,
+        members,
+        messages: [],
+        type: "team",
+      });
+    } catch (error) {
+      console.error("Failed to create team", error);
+    }
+  };
 
   const sendMessage = () => {
     if (!message.trim()) return;
@@ -117,6 +139,7 @@ const TeamCollaborationPage = () => {
         selectedConversation={selectedConversation}
         setSelectedConversation={setSelectedConversation}
         loadTeamMembers={loadTeamMembers}
+        onCreateTeam={handleCreateTeam}
       />
 
       <div className="flex flex-col flex-1">

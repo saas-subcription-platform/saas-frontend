@@ -25,3 +25,8 @@ export const getTeamMembers = async (teamId) => {
 
   return response.data;
 };
+
+export const createTeam = async (teamData) => {
+  const response = await teamApi.post("/teams", teamData);
+  return response.data;
+};
