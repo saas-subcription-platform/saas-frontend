@@ -105,8 +105,6 @@ const MyTimesheetsPage = () => {
                             <option value="ALL">All</option>
                             <option value="Draft">Draft</option>
                             <option value="Submitted">Submitted</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Rejected">Rejected</option>
                         </select>
 
                     </div>

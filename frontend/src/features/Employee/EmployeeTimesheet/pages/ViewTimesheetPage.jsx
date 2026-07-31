@@ -21,7 +21,7 @@ const ViewTimesheetPage = () => {
             try {
 
                 const user = await getCurrentUser();
-                const data = await getTimesheetById(id, user.id);
+                const data = await getTimesheetById(id, user.userId);
 
                 setTimesheet(data);
 
@@ -103,19 +103,34 @@ const ViewTimesheetPage = () => {
                         </h1>
 
                         <p className="text-gray-500 mt-1">
-                            View your submitted work details.
+                            View your work details.
                         </p>
 
                     </div>
 
-                    <button
-                        className="border border-gray-300 bg-white px-4 py-2 rounded-lg"
-                        onClick={() =>
-                            navigate("/employee/timesheet/history")
-                        }
-                    >
-                        Back
-                    </button>
+                    <div className="flex gap-3">
+
+                        <button
+                            className="border border-gray-300 bg-white px-4 py-2 rounded-lg"
+                            onClick={() =>
+                                navigate("/employee/timesheet/history")
+                            }
+                        >
+                            Back
+                        </button>
+
+                        {timesheet.status === "Draft" && (
+                            <button
+                                className="bg-primary text-white px-4 py-2 rounded-lg"
+                                onClick={() =>
+                                    navigate(`/employee/timesheet/edit/${timesheet.id}`)
+                                }
+                            >
+                                Edit Draft
+                            </button>
+                        )}
+
+                    </div>
 
                 </div>
 
