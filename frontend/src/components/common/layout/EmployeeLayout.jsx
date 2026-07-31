@@ -1,17 +1,33 @@
+import { useEffect, useState } from "react";
 import EmployeeTopBar from "./EmployeeTopbar";
+import { getCurrentUser } from "../../../../employeeManagement/services/userService";
+import { CurrentUserProvider } from "../context/CurrentUserContext";
 
 const EmployeeLayout = ({ children }) => {
-    return (
-        <div className="min-h-screen bg-background">
+  const [currentUser, setCurrentUser] = useState(null);
 
-            <EmployeeTopBar />
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const data = await getCurrentUser();
+        setCurrentUser(data);
+      } catch (error) {
+        console.error("Failed to fetch current user:", error);
+      }
+    };
 
-            <main className="p-8">
-                {children}
-            </main>
+    fetchCurrentUser();
+  }, []);
 
-        </div>
-    );
+  return (
+    <CurrentUserProvider value={currentUser}>
+      <div className="min-h-screen bg-background">
+        <EmployeeTopBar />
+
+        <main className="p-8">{children}</main>
+      </div>
+    </CurrentUserProvider>
+  );
 };
 
 export default EmployeeLayout;

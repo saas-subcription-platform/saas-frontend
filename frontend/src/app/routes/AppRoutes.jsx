@@ -93,7 +93,7 @@ function AppRoutes() {
 
       {/* Protected Employee Routes */}
       {/* Protected Employee Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["USER","EMPLOYEE","HR","MANAGER"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["ADMIN","USER","EMPLOYEE","HR","MANAGER"]} />}>
         <Route path="/employee/home" element={<EmployeeHomePage />} />
         <Route path="/employee/leave-planner" element={<LeavePlannerPage />} />
         <Route

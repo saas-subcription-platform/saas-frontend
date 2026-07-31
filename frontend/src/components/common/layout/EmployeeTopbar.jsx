@@ -1,39 +1,26 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../../features/Auth/services/authService";
-import { getCurrentUser } from "../../../../employeeManagement/services/userService";
+import { useCurrentUser } from "../context/CurrentUserContext";
 
 const EmployeeTopBar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const data = await getCurrentUser();
-        setUser(data);
-      } catch (error) {
-        console.error("Failed to fetch current user:", error);
-      }
-    };
-
-    fetchCurrentUser();
-  }, []);
+  const currentUser = useCurrentUser();
 
   const handleLogout = () => {
     logout();
     navigate("/login", { replace: true });
   };
 
-  const fullName = user
-    ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
-    : "";
+  const fullName = currentUser
+  ? `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim()
+  : "";
 
-  const initials = user
-    ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase()
-    : "";
+  const initials = currentUser
+  ? `${currentUser.firstName?.[0] || ""}${currentUser.lastName?.[0] || ""}`.toUpperCase()
+  : "";
 
   return (
     <header className="h-20 bg-white border-b border-border shadow-sm px-8 flex items-center justify-between">
@@ -65,7 +52,7 @@ const EmployeeTopBar = () => {
             <div className="absolute right-0 mt-2 w-70 bg-white border border-border rounded-lg shadow-lg z-50">
 
               <p className="w-full text-left px-4 py-3">
-                {user?.email}
+                {currentUser?.email}
               </p>
 
               <button

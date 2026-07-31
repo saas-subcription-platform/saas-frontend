@@ -1,104 +1,176 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
 
-const employees = [
-  "Rahul Sharma",
-  "Priya Nair",
-  "Rohan Patil",
-  "Amit Shah",
-  "You",
-];
+import { getCompanyUsers } from "../service/teamService";
 
-const CreateTeamModal = ({
-  open,
-  onClose,
-  onCreate,
-}) => {
+const CreateTeamModal = ({ open, onClose, onCreate }) => {
   const [teamName, setTeamName] = useState("");
-  const [selected, setSelected] = useState([]);
+  const [search, setSearch] = useState("");
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [employees, setEmployees] = useState([]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const loadEmployees = async () => {
+      try {
+        const users = await getCompanyUsers();
+        console.log(users);
+        setEmployees(users);
+      } catch (error) {
+        console.error("Failed to load company users", error);
+      }
+    };
+
+    loadEmployees();
+  }, [open]);
+
+  const filteredEmployees = useMemo(() => {
+    return employees.filter((emp) => {
+      const fullName = `${emp.firstName} ${emp.lastName}`;
+      return fullName.toLowerCase().includes(search.toLowerCase());
+    });
+  }, [employees, search]);
 
   if (!open) return null;
 
-  const toggleMember = (name) => {
-    if (selected.includes(name))
-      setSelected(selected.filter((m) => m !== name));
-    else setSelected([...selected, name]);
+  const toggleMember = (id) => {
+    if (selectedMembers.includes(id)) {
+      setSelectedMembers((prev) => prev.filter((m) => m !== id));
+    } else {
+      setSelectedMembers((prev) => [...prev, id]);
+    }
   };
 
   const handleCreate = () => {
     onCreate({
-      id: Date.now(),
-      name: teamName,
-      members: selected.length,
+      name: teamName.trim(),
+      description: null,
+      memberIds: selectedMembers,
     });
 
     setTeamName("");
-    setSelected([]);
+    setSearch("");
+    setSelectedMembers([]);
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+        {/* Header */}
 
-      <div className="bg-white rounded-xl p-6 w-112.5">
+        <div className="border-b px-5 py-4">
+          <h2 className="text-xl font-bold text-slate-800">Create Team</h2>
 
-        <h2 className="text-2xl font-bold mb-5">
-          Create Team
-        </h2>
-
-        <input
-          placeholder="Team Name"
-          value={teamName}
-          onChange={(e) =>
-            setTeamName(e.target.value)
-          }
-          className="w-full border rounded-lg p-3 mb-5"
-        />
-
-        <h3 className="font-semibold mb-3">
-          Select Members
-        </h3>
-
-        <div className="space-y-2 max-h-52 overflow-auto">
-
-          {employees.map((emp) => (
-
-            <label
-              key={emp}
-              className="flex gap-3"
-            >
-              <input
-                type="checkbox"
-                checked={selected.includes(emp)}
-                onChange={() => toggleMember(emp)}
-              />
-
-              {emp}
-            </label>
-
-          ))}
-
+          <p className="mt-1 text-sm text-gray-500">
+            Create a new private team.
+          </p>
         </div>
 
-        <div className="flex justify-end gap-3 mt-6">
+        {/* Body */}
 
+        <div className="space-y-4 p-5">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700">
+              Team Name
+            </label>
+
+            <input
+              value={teamName}
+              onChange={(e) => setTeamName(e.target.value)}
+              placeholder="Frontend Team"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <div className="mb-2 flex justify-between">
+              <span className="text-sm font-medium text-slate-700">
+                Members ({selectedMembers.length})
+              </span>
+            </div>
+
+            <div className="relative mb-3">
+              <Search
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search employees..."
+                className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary"
+              />
+            </div>
+
+            <div className="h-48 overflow-y-auto rounded-lg border border-gray-200">
+              {filteredEmployees.map((employee) => {
+                const checked = selectedMembers.includes(employee.userId);
+
+                const fullName = `${employee.firstName} ${employee.lastName}`;
+
+                const initials = fullName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase();
+
+                return (
+                  <button
+                    key={employee.userId}
+                    type="button"
+                    onClick={() => toggleMember(employee.userId)}
+                    className={`w-full flex items-center justify-between px-3 py-2 border-b last:border-b-0 transition
+                      ${checked ? "bg-primary/10" : "hover:bg-gray-50"}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        readOnly
+                        className="w-4 h-4"
+                      />
+
+                      <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-[11px] font-semibold">
+                        {initials}
+                      </div>
+
+                      <span className="text-sm font-medium text-slate-700">
+                        {employee.firstName} {employee.lastName}
+                      </span>
+                    </div>
+
+                    <span className="text-xs text-gray-500">
+                      {employee.role}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+
+        <div className="flex justify-end gap-3 border-t px-5 py-4">
           <button
             onClick={onClose}
-            className="px-5 py-2 border rounded-lg"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100"
           >
             Cancel
           </button>
 
           <button
+            disabled={!teamName.trim() || selectedMembers.length === 0}
             onClick={handleCreate}
-            className="bg-primary text-white px-5 py-2 rounded-lg"
+            className="rounded-lg bg-primary px-4 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             Create
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 };

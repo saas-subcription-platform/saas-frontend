@@ -1,66 +1,62 @@
 import {
-  Search,
-  Phone,
-  Video,
   MoreVertical,
   Building2,
   Hash,
-  User
 } from "lucide-react";
 
-const ConversationHeader = ({ conversation }) => {
+const ConversationHeader = ({
+  conversation,
+  showDetails,
+  onToggleDetails,
+}) => {
   return (
     <div className="h-20 bg-white border-b border-gray-200 px-6 flex items-center justify-between shadow-sm">
-
+      {/* Left */}
       <div className="flex items-center gap-4">
+        <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center">
+          {conversation.type === "company" && <Building2 size={22} />}
 
-  <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center">
+          {conversation.type === "team" && <Hash size={22} />}
 
-    {conversation.type === "company" && <Building2 size={22} />}
+          {conversation.type === "user" && (
+            <span className="font-semibold">
+              {conversation.name.charAt(0).toUpperCase()}
+            </span>
+          )}
+        </div>
 
-    {conversation.type === "team" && <Hash size={22} />}
+        <div>
+          <h2 className="font-semibold text-xl">
+            {conversation.name}
+          </h2>
 
-    {conversation.type === "user" && (
-      <span className="font-semibold">
-        {conversation.name.charAt(0)}
-      </span>
-    )}
+          <p className="text-sm text-gray-500">
+            {conversation.type === "company" &&
+              "Everyone in the company"}
 
-  </div>
+            {conversation.type === "team" &&
+              `${conversation.members?.length || 0} Members`}
 
-  <div>
-
-    <h2 className="font-semibold text-xl">
-      {conversation.name}
-    </h2>
-
-    <p className="text-sm text-gray-500">
-
-      {conversation.type === "company" &&
-        "Everyone in the company"}
-
-      {conversation.type === "team" &&
-        `${conversation.members.length} Members`}
-
-      {conversation.type === "user" &&
-        "Direct Message"}
-
-    </p>
-
-  </div>
-
-</div>
-
-      {/* Right */}
-
-      <div className="flex items-center gap-5">
-
-        <button className="hover:text-primary transition">
-          <MoreVertical size={20} />
-        </button>
-
+            {conversation.type === "user" &&
+              "Direct Message"}
+          </p>
+        </div>
       </div>
 
+      {/* Right */}
+      <div className="flex items-center">
+        <button
+          onClick={onToggleDetails}
+          title={showDetails ? "Hide Details" : "Show Details"}
+          className={`p-2 rounded-lg transition ${
+            showDetails
+              ? "bg-primary text-white"
+              : "hover:bg-gray-100 text-gray-600"
+          }`}
+        >
+          <MoreVertical size={20} />
+        </button>
+      </div>
     </div>
   );
 };
