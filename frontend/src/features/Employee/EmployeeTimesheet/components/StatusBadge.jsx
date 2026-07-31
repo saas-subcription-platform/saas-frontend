@@ -14,8 +14,8 @@ const StatusBadge = ({ status }) => {
             break;
 
         case "Draft":
-            bgColor = "bg-yellow-100";
-            textColor = "text-yellow-700";
+            bgColour = "bg-yellow-100";
+            textColour = "text-yellow-700";
             break;
 
         case "Rejected":

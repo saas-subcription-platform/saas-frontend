@@ -8,7 +8,7 @@ const TimesheetTable = ({ timesheets }) => {
     return (
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
 
-            <table className="w-full">
+            <table className="w-full table-fixed">
 
                 <thead className="bg-background">
                     <tr>
@@ -29,7 +29,17 @@ const TimesheetTable = ({ timesheets }) => {
                         >
 
                             <td className="p-4">
-                                {timesheet.week}
+                                {new Date(timesheet.weekStartDate).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                })}{" "}
+                                -{" "}
+                                {new Date(timesheet.weekEndDate).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                })}
                             </td>
 
                             <td className="p-4">
