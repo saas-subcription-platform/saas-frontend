@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyTimesheets } from "../services/timesheetService";
 
@@ -14,30 +14,30 @@ const MyTimesheetsPage = () => {
     const [timesheets, setTimesheets] = useState([]);
     const [statusFilter, setStatusFilter] = useState("ALL");
 
+    const fetchTimesheets = useCallback(async () => {
+
+        try {
+
+            const user = await getCurrentUser();
+
+            const data = await getMyTimesheets(user.userId);
+
+            setTimesheets(data);
+
+        } catch (error) {
+
+            console.error("Failed to fetch timesheets:", error);
+
+        }
+
+    }, []);
+
     // Fetch timesheets from backend
     useEffect(() => {
 
-        const fetchTimesheets = async () => {
-
-            try {
-
-                const user = await getCurrentUser();
-
-                const data = await getMyTimesheets(user.userId);
-
-                setTimesheets(data);
-
-            } catch (error) {
-
-                console.error("Failed to fetch timesheets:", error);
-
-            }
-
-        };
-
         fetchTimesheets();
 
-    }, []);
+    }, [fetchTimesheets]);
 
     const filteredTimesheets =
         statusFilter === "ALL"
@@ -114,6 +114,7 @@ const MyTimesheetsPage = () => {
                 {/* Timesheet Table */}
                 <TimesheetTable
                     timesheets={filteredTimesheets}
+                    onTimesheetSubmitted={fetchTimesheets}
                 />
 
             </div>

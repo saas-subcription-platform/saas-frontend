@@ -24,47 +24,68 @@ const CreateTimesheetPage = () => {
 
     const [employeeId, setEmployeeId] = useState(null);
 
-    const defaultEntries = [
-        {
-            day: "Monday",
-            projectName: "",
-            task: "",
-            hours: "",
-            description: ""
-        },
-        {
-            day: "Tuesday",
-            projectName: "",
-            task: "",
-            hours: "",
-            description: ""
-        },
-        {
-            day: "Wednesday",
-            projectName: "",
-            task: "",
-            hours: "",
-            description: ""
-        },
-        {
-            day: "Thursday",
-            projectName: "",
-            task: "",
-            hours: "",
-            description: ""
-        },
-        {
-            day: "Friday",
-            projectName: "",
-            task: "",
-            hours: "",
-            description: ""
-        }
-    ];
-
     const [weekStartDate, setWeekStartDate] = useState("");
 
-    const [entries, setEntries] = useState(defaultEntries);
+    const [entries, setEntries] = useState([]);
+
+    const todayISO = new Date().toISOString().split("T")[0];
+
+    const generateWeekDates = (startDate) => {
+
+        if (!startDate)
+            return [];
+
+        const dates = [];
+
+        let current = new Date(startDate + "T00:00:00");
+
+        while (dates.length < 6) {
+
+            if (current.getDay() !== 0) {
+                dates.push(new Date(current));
+            }
+
+            current.setDate(current.getDate() + 1);
+
+        }
+
+        return dates;
+
+    };
+
+    const generateDefaultEntries = (startDate) => {
+
+        return generateWeekDates(startDate).map((d) => ({
+            day: d.toISOString().split("T")[0],
+            projectName: "",
+            task: "",
+            hours: "",
+            description: ""
+        }));
+
+    };
+
+    const getWeekEndDate = (startDate) => {
+
+        const dates = generateWeekDates(startDate);
+
+        if (dates.length === 0)
+            return "";
+
+        return dates[dates.length - 1].toISOString().split("T")[0];
+
+    };
+
+    const formatDisplayDate = (isoDate) => {
+
+        if (!isoDate)
+            return "";
+
+        const [year, month, day] = isoDate.split("-");
+
+        return `${day}/${month}/${year}`;
+
+    };
 
     useEffect(() => {
 
@@ -87,6 +108,10 @@ const CreateTimesheetPage = () => {
                     );
 
                     setWeekStartDate(timesheet.weekStartDate);
+
+                    const defaultEntries = generateDefaultEntries(
+                        timesheet.weekStartDate
+                    );
 
                     const updatedEntries = defaultEntries.map(
                         (defaultEntry) => {
@@ -144,19 +169,6 @@ const CreateTimesheetPage = () => {
             total + Number(entry.hours || 0),
         0
     );
-
-    const getWeekEndDate = (startDate) => {
-
-        if (!startDate)
-            return "";
-
-        const endDate = new Date(startDate);
-
-        endDate.setDate(endDate.getDate() + 6);
-
-        return endDate.toISOString().split("T")[0];
-
-    };
 
     const buildRequest = () => ({
 
@@ -320,15 +332,18 @@ const CreateTimesheetPage = () => {
                     <input
                         type="date"
                         value={weekStartDate}
+                        max={todayISO}
                         onChange={(e) => {
-                            const selectedDate = new Date(e.target.value);
+                            const selectedDate = e.target.value;
 
-                            if (selectedDate.getDay() !== 1) {
-                                toast.warning("Please select a Monday as the week starting date.");
+                            if (selectedDate > todayISO) {
+                                toast.warning("Future dates cannot be selected.");
                                 return;
                             }
 
-                            setWeekStartDate(e.target.value);
+                            setWeekStartDate(selectedDate);
+
+                            setEntries(generateDefaultEntries(selectedDate));
                         }}
                         className="border border-border rounded-lg px-4 py-2"
                     />
@@ -355,13 +370,26 @@ const CreateTimesheetPage = () => {
 
                         <tbody>
 
+                            {entries.length === 0 && (
+
+                                <tr>
+                                    <td
+                                        className="p-4 text-gray-500"
+                                        colSpan="5"
+                                    >
+                                        Please select a week starting date to add entries.
+                                    </td>
+                                </tr>
+
+                            )}
+
                             {entries.map((entry, index) => (
 
                                 <tr
                                     key={entry.day}
                                     className="border-t border-border"
                                 >                                    <td className="p-4">
-                                        {entry.day}
+                                        {formatDisplayDate(entry.day)}
                                     </td>
 
                                     <td className="p-4">

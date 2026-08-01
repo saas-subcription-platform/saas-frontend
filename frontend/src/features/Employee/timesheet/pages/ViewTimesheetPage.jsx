@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import TimesheetHeader from "../components/TimesheetHeader";
 import StatusBadge from "../components/StatusBadge";
 
-import { getTimesheetById } from "../services/timesheetService";
+import { getTimesheetById, submitTimesheet } from "../services/timesheetService";
 import { getCurrentUser } from "../../services/userService";
 
 const ViewTimesheetPage = () => {
@@ -13,6 +14,21 @@ const ViewTimesheetPage = () => {
     const { id } = useParams();
 
     const [timesheet, setTimesheet] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
+
+    const formatDisplayDate = (isoDate) => {
+
+        if (!isoDate)
+            return "";
+
+        const [year, month, day] = isoDate.split("-");
+
+        if (!year || !month || !day)
+            return isoDate;
+
+        return `${day}/${month}/${year}`;
+
+    };
 
     useEffect(() => {
 
@@ -36,6 +52,34 @@ const ViewTimesheetPage = () => {
         fetchTimesheet();
 
     }, [id]);
+
+    const handleDirectSubmit = async () => {
+
+        try {
+
+            setSubmitting(true);
+
+            const user = await getCurrentUser();
+
+            await submitTimesheet(timesheet.id, user.userId);
+
+            toast.success("Timesheet submitted successfully.");
+
+            navigate("/employee/timesheet/history");
+
+        } catch (error) {
+
+            console.error("Failed to submit timesheet.", error);
+
+            toast.error("Failed to submit timesheet.");
+
+        } finally {
+
+            setSubmitting(false);
+
+        }
+
+    };
 
     if (!timesheet) {
 
@@ -120,14 +164,28 @@ const ViewTimesheetPage = () => {
                         </button>
 
                         {timesheet.status === "Draft" && (
-                            <button
-                                className="bg-primary text-white px-4 py-2 rounded-lg"
-                                onClick={() =>
-                                    navigate(`/employee/timesheet/edit/${timesheet.id}`)
-                                }
-                            >
-                                Edit Draft
-                            </button>
+
+                            <>
+
+                                <button
+                                    className="border border-gray-300 bg-white px-4 py-2 rounded-lg disabled:opacity-50"
+                                    disabled={submitting}
+                                    onClick={handleDirectSubmit}
+                                >
+                                    {submitting ? "..." : "Save"}
+                                </button>
+
+                                <button
+                                    className="bg-primary text-white px-4 py-2 rounded-lg"
+                                    onClick={() =>
+                                        navigate(`/employee/timesheet/edit/${timesheet.id}`)
+                                    }
+                                >
+                                    Edit Draft
+                                </button>
+
+                            </>
+
                         )}
 
                     </div>
@@ -245,7 +303,7 @@ const ViewTimesheetPage = () => {
                                 >
 
                                     <td className="px-5 py-4">
-                                        {entry.day}
+                                        {formatDisplayDate(entry.day)}
                                     </td>
 
                                     <td className="px-5 py-4">

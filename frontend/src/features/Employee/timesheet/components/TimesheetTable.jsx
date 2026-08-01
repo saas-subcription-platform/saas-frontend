@@ -1,9 +1,48 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import StatusBadge from "./StatusBadge";
 
-const TimesheetTable = ({ timesheets }) => {
+import { submitTimesheet } from "../services/timesheetService";
+import { getCurrentUser } from "../../services/userService";
+
+const TimesheetTable = ({ timesheets, onTimesheetSubmitted }) => {
 
     const navigate = useNavigate();
+
+    console.log("STATUS:", timesheets[0]?.status);
+
+    const [submittingId, setSubmittingId] = useState(null);
+
+    const handleDirectSubmit = async (timesheetId) => {
+
+        try {
+
+            setSubmittingId(timesheetId);
+
+            const user = await getCurrentUser();
+
+            await submitTimesheet(timesheetId, user.userId);
+
+            toast.success("Timesheet submitted successfully.");
+
+            if (onTimesheetSubmitted) {
+                onTimesheetSubmitted();
+            }
+
+        } catch (error) {
+
+            console.error("Failed to submit timesheet.", error);
+
+            toast.error("Failed to submit timesheet.");
+
+        } finally {
+
+            setSubmittingId(null);
+
+        }
+
+    };
 
     return (
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -56,17 +95,33 @@ const TimesheetTable = ({ timesheets }) => {
 
                             <td className="p-4">
 
-                                {timesheet.status === "DRAFT" ? (
-                                    <button
-                                        className="bg-primary text-white px-3 py-2 rounded-lg w-20"
-                                        onClick={() =>
-                                            navigate(
-                                                `/employee/timesheet/edit/${timesheet.id}`
-                                            )
-                                        }
-                                    >
-                                        Edit
-                                    </button>
+                                {timesheet.status === "Draft" ? (
+
+                                    <div className="flex gap-2">
+
+                                        <button
+                                            className="bg-primary text-white px-3 py-2 rounded-lg w-20"
+                                            onClick={() =>
+                                                navigate(
+                                                    `/employee/timesheet/edit/${timesheet.id}`
+                                                )
+                                            }
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            className="border border-border px-3 py-2 rounded-lg w-20 disabled:opacity-50"
+                                            disabled={submittingId === timesheet.id}
+                                            onClick={() =>
+                                                handleDirectSubmit(timesheet.id)
+                                            }
+                                        >
+                                            {submittingId === timesheet.id ? "..." : "Save"}
+                                        </button>
+
+                                    </div>
+
                                 ) : (
                                     <button
                                         className="bg-primary text-white px-3 py-2 rounded-lg w-20"
