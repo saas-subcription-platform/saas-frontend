@@ -1,4 +1,4 @@
-import { FEATURES } from "../constants/feature.constants";
+import { FEATURES } from "../constants/features.constants";
 import {
   Clock3,
   CalendarDays,

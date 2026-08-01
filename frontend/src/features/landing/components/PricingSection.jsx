@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import PricingCard from "../../../components/ui/PricingCard";
-// import { PRICING_PLANS } from "../constants/pricing.constants";
 
 import { useEffect,useState } from "react";
-import { getAllSubscriptionPlans } from "../../../subscription/services/subscriptionPlanService"
+import { getAllSubscriptionPlans } from "../../admin/subscriptions/services/subscriptionPlanService"
 
 const PricingSection = () => {
 

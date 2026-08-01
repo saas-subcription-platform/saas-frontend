@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useEffect, useMemo, useState } from "react";
-import { getSubscriptionPlanById } from "../../../subscription/services/subscriptionPlanService";
+import { getSubscriptionPlanById } from "../../admin/subscriptions/services/subscriptionPlanService";
 import { ArrowLeft } from "lucide-react";
 
 const PlanConfigurationPage = () => {
@@ -216,37 +216,6 @@ const PlanConfigurationPage = () => {
 
               {/* Action Buttons */}
               <div className="space-y-3 pt-8">
-                {/*
-                <button
-                  onClick={() => {
-                    const params = new URLSearchParams({
-                      plan: targetPlan.id,
-                      billing: isYearly ? "YEARLY" : "MONTHLY",
-                    });
-
-                    const redirectTo = `/payment?${params.toString()}`;
-
-                    const token = localStorage.getItem("token");
-
-                    console.log("Token:", token);
-
-                    if (token) {
-                      console.log("Navigating to payment");
-                      navigate(redirectTo);
-                    } else {
-                      console.log("Navigating to login");
-                      navigate("/login", {
-                        state: {
-                          redirectTo,
-                        },
-                      });
-                    }
-                  }}
-
-                  className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-bold tracking-wide transition shadow-md"
-                >
-                  Buy Now
-                </button> */}
                 <button
                   onClick={() => {
                     const params = new URLSearchParams({

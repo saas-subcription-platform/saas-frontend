@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare, Users, LayoutDashboard, LogOut } from "lucide-react";
 
-import { logout } from "../../../Auth/Services/authService";
+import { logout } from "../../../auth/services/authService";
 
 const Sidebar = ({ currentUser }) => {
   const navigate = useNavigate();

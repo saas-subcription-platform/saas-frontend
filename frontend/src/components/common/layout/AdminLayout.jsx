@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AdminSidebar from "./AdminSideBar";
 import AdminTopbar from "./AdminTopBar";
 
-import { getDashboardDetails } from "../../../features/Auth/services/companyService";
+import { getDashboardDetails } from "../../../features/auth/services/companyService";
 
 const AdminLayout = ({ children }) => {
   const [dashboard, setDashboard] = useState({
