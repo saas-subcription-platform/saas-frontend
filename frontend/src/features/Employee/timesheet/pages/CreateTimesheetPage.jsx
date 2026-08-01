@@ -28,7 +28,17 @@ const CreateTimesheetPage = () => {
 
     const [entries, setEntries] = useState([]);
 
-    const todayISO = new Date().toISOString().split("T")[0];
+    const toISODate = (date) => {
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    };
+
+    const todayISO = toISODate(new Date());
 
     const generateWeekDates = (startDate) => {
 
@@ -56,7 +66,7 @@ const CreateTimesheetPage = () => {
     const generateDefaultEntries = (startDate) => {
 
         return generateWeekDates(startDate).map((d) => ({
-            day: d.toISOString().split("T")[0],
+            day: toISODate(d),
             projectName: "",
             task: "",
             hours: "",
@@ -72,7 +82,7 @@ const CreateTimesheetPage = () => {
         if (dates.length === 0)
             return "";
 
-        return dates[dates.length - 1].toISOString().split("T")[0];
+        return toISODate(dates[dates.length - 1]);
 
     };
 
@@ -152,6 +162,11 @@ const CreateTimesheetPage = () => {
         field,
         value
     ) => {
+
+        if (field === "hours" && Number(value) > 10) {
+            toast.warning("Hours cannot exceed 10 (max shift length).");
+            return;
+        }
 
         const updatedEntries = [...entries];
 
@@ -438,7 +453,7 @@ const CreateTimesheetPage = () => {
                                         <input
                                             type="number"
                                             min="0"
-                                            max="24"
+                                            max="10"
                                             step="0.5"
                                             value={entry.hours}
                                             onChange={(e) =>
