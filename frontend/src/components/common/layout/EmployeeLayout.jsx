@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import EmployeeTopBar from "./EmployeeTopbar";
-import { getCurrentUser } from "../../../../employeeManagement/services/userService";
+import EmployeeTopBar from "./EmployeeTopBar";
+import { getCurrentUser } from "../../../features/employee/services/userService";
 import { CurrentUserProvider } from "../context/CurrentUserContext";
 
 const EmployeeLayout = ({ children }) => {

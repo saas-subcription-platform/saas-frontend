@@ -3,15 +3,15 @@ import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { CreditCard, Smartphone, ChevronLeft } from "lucide-react";
 import { toast } from "react-toastify";
 
-import { getCompanyProfile } from "../../Auth/Services/companyService";
-import { getSubscriptionPlanById } from "../../../subscription/services/subscriptionPlanService";
+import { getCompanyProfile } from "../../auth/services/companyService";
+import { getSubscriptionPlanById } from "../../admin/subscriptions/services/subscriptionPlanService";
 import {
   renewSubscription,
   createSubscription,
   changeSubscriptionPlan,
   getMySubscription,
-} from "../../../subscription/services/subscriptionService";
-import { processRazorpayPayment } from "../../../paymentManagement/services/razorpayService";
+} from "../../admin/subscriptions/services/subscriptionService";
+import { processRazorpayPayment } from "../../admin/billing/services/razorpayService";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();

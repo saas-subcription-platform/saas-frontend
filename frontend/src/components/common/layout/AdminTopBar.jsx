@@ -2,7 +2,7 @@ import { Search, Bell } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { logout } from "../../../features/Auth/services/authService";
+import { logout } from "../../../features/auth/services/authService";
 
 const AdminTopBar = ({ adminName }) => {
   const [showMenu, setShowMenu] = useState(false);

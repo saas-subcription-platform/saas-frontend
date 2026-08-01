@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { getCurrentUser } from "../../../../../employeeManagement/services/userService";
+import { getCurrentUser } from "../../services/userService";
 
 import {
   getOrCreateConversation,
   getMessages,
   sendMessage as sendMessageApi,
-} from "../service/conversation.service";
+} from "../services/conversationService";
 
 import Sidebar from "../components/Sidebar";
 import ConversationPanel from "../components/ConversationPanel";
@@ -21,7 +21,7 @@ import {
   getTeamMembers,
   createTeam,
   getCompanyUsers,
-} from "../service/teamService";
+} from "../services/teamService";
 
 const TeamCollaborationPage = () => {
   const [message, setMessage] = useState("");

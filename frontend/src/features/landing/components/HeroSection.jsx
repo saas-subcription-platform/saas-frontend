@@ -1,5 +1,5 @@
 import { ArrowRight, CheckCircle } from "lucide-react";
-import { HERO_CONTENT } from "../constants/hero.contants";
+import { HERO_CONTENT } from "../constants/hero.constants";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {

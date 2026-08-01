@@ -1,6 +1,6 @@
 import { Search, Hash } from "lucide-react";
 import { useMemo, useState } from "react";
-import CreateTeamModal from "./CreateTeamModel";
+import CreateTeamModal from "./CreateTeamModal";
 
 const ConversationPanel = ({
   teams,
