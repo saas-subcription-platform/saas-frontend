@@ -24,12 +24,13 @@ export const clearAllNotifications = async () => {
     return await api.delete(
         "/admin/notifications/clear"
     );
-
-    
-    
-
 };
 // Get latest notification for dashboard
 export const getLatestNotification = async () => {
     return await api.get("/admin/notifications/latest");
+};
+
+// approve leave
+export const approveLeave = async (leaveRequestId) => {
+    return await api.patch(`/employee/leaves/${leaveRequestId}/approve`);
 };
