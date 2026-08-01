@@ -9,7 +9,7 @@ import {
   getGoalsByCompany,
   getGoalStatistics,
 } from "../services/goalService";
-import { getCurrentUser } from "../../../Auth/Services/authService";
+import { getCurrentUser } from "../../services/userService";
 
 const GoalsDashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -19,10 +19,3 @@ export const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
 };
-
-export const getCurrentUser = async () => {
-
-    const response = await api.get("/admin/users/me");
-
-    return response.data;
-};

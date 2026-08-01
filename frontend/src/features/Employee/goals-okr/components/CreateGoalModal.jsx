@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { createGoal } from "../services/goalService";
-import { getCurrentUser } from "../../../Auth/Services/authService";
+import { getCurrentUser } from "../../services/userService";
 
 
 const CreateGoalModal = ({ isOpen, onClose, onGoalCreated }) => {
