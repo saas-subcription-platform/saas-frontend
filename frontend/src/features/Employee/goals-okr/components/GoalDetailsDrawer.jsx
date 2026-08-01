@@ -1,174 +1,327 @@
-import { X, CalendarDays, Target, CheckCircle2 } from "lucide-react";
+import { 
+  X, 
+  CalendarDays, 
+  Target, 
+  CheckCircle2 
+} from "lucide-react";
 
-const GoalDetailsDrawer = ({ goal, isOpen, onClose }) => {
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { updateGoal, deleteGoal } from "../services/goalService";
+
+
+const GoalDetailsDrawer = ({ goal, isOpen, onClose, onGoalUpdated }) => {
+
+
+  const [progress,setProgress] = useState(
+    goal?.progress || 0
+  );
+
+
   if (!isOpen || !goal) return null;
 
+
+
+  const handleUpdate = async()=>{
+
+    try{
+
+
+      const updatedGoal = {
+
+        title: goal.title,
+
+        objective: goal.objective,
+
+        category: goal.category,
+
+        priority: goal.priority,
+
+        deadline: goal.deadline,
+
+        userId: goal.userId,
+
+        companyId: goal.companyId,
+
+        progress: Number(progress),
+
+        status:
+          Number(progress) === 100
+          ? 2
+          : Number(progress) > 0
+          ? 1
+          : 0
+
+      };
+
+
+
+      await updateGoal(
+        goal.id,
+        updatedGoal
+      );
+
+
+
+      toast.success(
+        "Goal updated successfully"
+      );
+
+
+      if(onGoalUpdated)
+      {
+        onGoalUpdated();
+      }
+
+
+
+    }
+    catch(error){
+
+      console.error(error);
+
+      toast.error(
+        "Update failed"
+      );
+
+    }
+
+  };
+
+
+
+
+
+  const handleDelete = async()=>{
+
+    try{
+
+      await deleteGoal(goal.id);
+
+
+      toast.success(
+        "Goal deleted successfully"
+      );
+
+
+      onClose();
+
+
+      if(onGoalUpdated)
+      {
+        onGoalUpdated();
+      }
+
+
+    }
+    catch(error){
+
+      console.error(error);
+
+      toast.error(
+        "Delete failed"
+      );
+
+    }
+
+  };
+
+
+
+
   return (
+
     <div className="fixed inset-0 bg-black/30 flex justify-end z-50">
+
 
       <div className="w-full max-w-md bg-white h-screen shadow-xl p-6 overflow-y-auto">
 
+
+
         {/* Header */}
+
         <div className="flex justify-between items-center border-b pb-4">
 
-          <h2 className="text-2xl font-bold text-dark">
+
+          <h2 className="text-2xl font-bold">
             Goal Details
           </h2>
 
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-100 transition"
-          >
-            <X className="text-gray-600" />
+
+          <button onClick={onClose}>
+            <X/>
           </button>
+
 
         </div>
 
-        {/* Goal */}
+
+
+
         <div className="mt-8">
 
-          <h3 className="text-xl font-semibold text-dark">
+
+          <h3 className="text-xl font-semibold">
             {goal.title}
           </h3>
 
-          <p className="text-dark/70 mt-2">
+
+          <p className="mt-2 text-gray-600">
             {goal.objective}
           </p>
 
+
         </div>
 
-        {/* Progress */}
+
+
+
+
+        {/* Progress Update */}
+
         <div className="mt-8">
 
-          <div className="flex justify-between items-center mb-2">
 
-            <span className="text-dark/70">
-              Progress
-            </span>
+          <label className="font-medium">
+            Update Progress (%)
+          </label>
 
-            <span className="font-semibold text-primary">
-              {goal.progress}%
-            </span>
 
-          </div>
+          <input
 
-          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            type="number"
 
-            <div
-              className="bg-primary h-3 rounded-full transition-all duration-500"
-              style={{ width: `${goal.progress}%` }}
-            ></div>
+            min="0"
 
-          </div>
+            max="100"
+
+            value={progress}
+
+            onChange={(e)=>
+              setProgress(e.target.value)
+            }
+
+            className="w-full border rounded-xl px-4 py-3 mt-2"
+
+          />
+
 
         </div>
 
+
+
+
+
+        <button
+
+          onClick={handleUpdate}
+
+          className="w-full mt-5 bg-primary text-white py-3 rounded-xl"
+
+        >
+
+          Update Goal
+
+        </button>
+
+
+
+
+
+        <button
+
+          onClick={handleDelete}
+
+          className="w-full mt-3 bg-red-500 text-white py-3 rounded-xl"
+
+        >
+
+          Delete Goal
+
+        </button>
+
+
+
+
         {/* Details */}
+
         <div className="space-y-5 mt-8">
 
-          <div className="flex items-center gap-3">
 
-            <CalendarDays className="text-primary" />
+          <div className="flex gap-3">
+
+            <CalendarDays/>
 
             <div>
-              <p className="text-sm text-dark/70">
+
+              <p className="text-sm text-gray-500">
                 Deadline
               </p>
 
-              <p className="font-medium">
-                {goal.deadline}
+              <p>
+                {new Date(goal.deadline)
+                .toLocaleDateString()}
               </p>
+
             </div>
 
           </div>
 
-          <div className="flex items-center gap-3">
 
-            <Target className="text-primary" />
+
+
+          <div className="flex gap-3">
+
+            <Target/>
 
             <div>
-              <p className="text-sm text-dark/70">
+
+              <p className="text-sm text-gray-500">
                 Priority
               </p>
 
-              <p className="font-medium">
+              <p>
                 {goal.priority}
               </p>
+
             </div>
 
           </div>
 
-          <div className="flex items-center gap-3">
 
-            <CheckCircle2 className="text-green-500" />
+
+
+          <div className="flex gap-3">
+
+            <CheckCircle2/>
 
             <div>
-              <p className="text-sm text-dark/70">
+
+              <p className="text-sm text-gray-500">
                 Status
               </p>
 
-              <p className="font-medium">
+              <p>
                 {goal.status}
               </p>
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* Key Results */}
-        <div className="mt-10 border-t pt-6">
-
-          <h3 className="font-semibold text-lg text-dark mb-4">
-            Key Results
-          </h3>
-
-          <div className="space-y-3">
-
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
-
-              <CheckCircle2
-                size={18}
-                className="text-green-500"
-              />
-
-              <span>
-                Complete Course
-              </span>
-
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
-
-              <CheckCircle2
-                size={18}
-                className="text-green-500"
-              />
-
-              <span>
-                Build Mini Project
-              </span>
-
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
-
-              <div className="w-[18px] h-[18px] rounded-full border-2 border-gray-400"></div>
-
-              <span className="text-dark/70">
-                Deploy Application
-              </span>
 
             </div>
 
           </div>
 
+
+
         </div>
+
+
 
       </div>
 
+
     </div>
+
   );
 };
+
 
 export default GoalDetailsDrawer;

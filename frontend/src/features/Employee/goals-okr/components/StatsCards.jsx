@@ -5,38 +5,44 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-const stats = [
-  {
-    title: "Active Goals",
-    value: 8,
-    icon: Target,
-    color: "text-primary",
-    bg: "bg-primary/10",
-  },
-  {
-    title: "Completed",
-    value: 5,
-    icon: CheckCircle,
-    color: "text-green-600",
-    bg: "bg-green-100",
-  },
-  {
-    title: "Overdue",
-    value: 1,
-    icon: AlertTriangle,
-    color: "text-red-600",
-    bg: "bg-red-100",
-  },
-  {
-    title: "Average Progress",
-    value: "72%",
-    icon: TrendingUp,
-    color: "text-purple-600",
-    bg: "bg-purple-100",
-  },
-];
+const StatsCards = ({
+  activeGoals,
+  completedGoals,
+  overdueGoals,
+  averageProgress,
+}) => {
 
-const StatsCards = () => {
+  const stats = [
+    {
+      title: "Active Goals",
+      value: activeGoals,
+      icon: Target,
+      color: "text-primary",
+      bg: "bg-primary/10",
+    },
+    {
+      title: "Completed",
+      value: completedGoals,
+      icon: CheckCircle,
+      color: "text-green-600",
+      bg: "bg-green-100",
+    },
+    {
+      title: "Overdue",
+      value: overdueGoals,
+      icon: AlertTriangle,
+      color: "text-red-600",
+      bg: "bg-red-100",
+    },
+    {
+      title: "Average Progress",
+      value: `${averageProgress}%`,
+      icon: TrendingUp,
+      color: "text-purple-600",
+      bg: "bg-purple-100",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {stats.map((item) => {
@@ -51,7 +57,11 @@ const StatsCards = () => {
             <div
               className={`w-14 h-14 rounded-2xl ${item.bg} flex items-center justify-center mb-5`}
             >
-              <Icon className={item.color} size={28} strokeWidth={2.3} />
+              <Icon
+                className={item.color}
+                size={28}
+                strokeWidth={2.3}
+              />
             </div>
 
             {/* Title */}
