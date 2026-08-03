@@ -1,5 +1,4 @@
 const LeaveHistory = ({ leaveRequests }) => {
-  
   return (
     <div className="bg-white rounded-xl shadow-md p-6 mt-6">
       <h2 className="text-2xl font-semibold mb-4">Leave History</h2>
@@ -17,7 +16,7 @@ const LeaveHistory = ({ leaveRequests }) => {
 
         <tbody>
           {leaveRequests.map((leave) => (
-            <tr key={leave.id}>
+            <tr key={leave.leaveRequestId}>
               <td className="border p-3">{leave.leaveType}</td>
               <td className="border p-3">{leave.fromDate}</td>
               <td className="border p-3">{leave.toDate}</td>

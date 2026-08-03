@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../../components/common/layout/AdminLayout";
-
+import { toast } from "react-toastify";
 import {
   getNotifications,
   markNotificationRead,
   markAllRead,
   clearAllNotifications,
+  approveLeave,
 } from "./services/notificationService";
 
 const NotificationsPage = () => {
@@ -66,6 +67,19 @@ const NotificationsPage = () => {
     }
   };
 
+  // handler for leave requests
+  const handleApproveLeave = async (leaveRequestId) => {
+    try {
+      await approveLeave(leaveRequestId);
+
+      toast.success("Leave approved successfully.");
+
+      await loadNotifications();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to approve leave.");
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -111,11 +125,33 @@ const NotificationsPage = () => {
                 <h3 className="text-lg">{notification.title}</h3>
                 <p className="text-gray-600 mt-2">{notification.message}</p>
                 <p className="text-gray-500 mt-2 text-sm">
-                  {notification.createdAt}
+                  {notification.referenceId ? (
+                    <p className="text-gray-500 mt-2 text-sm">
+                      Leave Dates: {notification.fromDate} -{" "}
+                      {notification.toDate}
+                    </p>
+                  ) : (
+                    <p className="text-gray-500 mt-2 text-sm">
+                      {notification.createdAt}
+                    </p>
+                  )}
                 </p>
                 <span className="text-sm text-primary">
                   {notification.status === "UNREAD" ? "UNREAD" : "READ"}
                 </span>
+                {notification.referenceId && (
+                  <div className="mt-4">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleApproveLeave(notification.referenceId);
+                      }}
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                    >
+                      Approve
+                    </button>
+                  </div>
+                )}
               </div>
             ))
           )}

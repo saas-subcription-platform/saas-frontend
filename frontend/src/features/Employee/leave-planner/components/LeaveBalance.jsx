@@ -1,4 +1,4 @@
-const LeaveBalance = () => {
+const LeaveBalance = ({ leaveBalance }) => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
 
@@ -8,7 +8,7 @@ const LeaveBalance = () => {
                 </h3>
 
                 <p className="text-4xl font-bold text-blue-600 mt-4">
-                    8
+                    {leaveBalance?.casualBalance}
                 </p>
 
                 <p className="text-gray-500 mt-2">
@@ -22,7 +22,7 @@ const LeaveBalance = () => {
                 </h3>
 
                 <p className="text-4xl font-bold text-green-600 mt-4">
-                    5
+                    {leaveBalance?.sickBalance}
                 </p>
 
                 <p className="text-gray-500 mt-2">
@@ -36,7 +36,7 @@ const LeaveBalance = () => {
                 </h3>
 
                 <p className="text-4xl font-bold text-purple-600 mt-4">
-                    12
+                    {leaveBalance?.earnedBalance}
                 </p>
 
                 <p className="text-gray-500 mt-2">
