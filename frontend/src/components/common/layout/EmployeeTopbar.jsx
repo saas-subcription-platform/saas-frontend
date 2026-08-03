@@ -15,12 +15,12 @@ const EmployeeTopBar = () => {
   };
 
   const fullName = currentUser
-  ? `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim()
-  : "";
+    ? `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim()
+    : "";
 
   const initials = currentUser
-  ? `${currentUser.firstName?.[0] || ""}${currentUser.lastName?.[0] || ""}`.toUpperCase()
-  : "";
+    ? `${currentUser.firstName?.[0] || ""}${currentUser.lastName?.[0] || ""}`.toUpperCase()
+    : "";
 
   return (
     <header className="h-20 bg-white border-b border-border shadow-sm px-8 flex items-center justify-between">
