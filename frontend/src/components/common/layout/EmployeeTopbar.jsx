@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../../features/Auth/services/authService";
+import { logout } from "../../../features/auth/services/authService";
 import { useCurrentUser } from "../context/CurrentUserContext";
 
 const EmployeeTopBar = () => {
