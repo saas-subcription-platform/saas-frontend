@@ -1,7 +1,7 @@
 import api from "../../../../api/api";
 
 
-const GOAL_BASE_URL = "https://localhost:7252";
+const GOAL_BASE_URL = "http://localhost:5072";
 
 
 // Get all goals
