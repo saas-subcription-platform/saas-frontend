@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import "./chatbot.css";
+import ReactMarkdown from "react-markdown";
 
 export default function ChatWindow({ onClose }) {
-
   const [messages, setMessages] = useState([
-    { text: "Hello 👋 How can I help you?", sender: "bot" }
+    { text: "Hello 👋 How can I help you?", sender: "bot" },
   ]);
 
   const [input, setInput] = useState("");
@@ -32,12 +32,12 @@ export default function ChatWindow({ onClose }) {
       const response = await fetch("http://127.0.0.1:8000/chat", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           session_id: sessionId,
-          message: userInput
-        })
+          message: userInput,
+        }),
       });
 
       const data = await response.json();
@@ -45,13 +45,12 @@ export default function ChatWindow({ onClose }) {
 
       setMessages((prev) => [
         ...prev,
-        { text: data.answer || "No reply from server", sender: "bot" }
+        { text: data.answer || "No reply from server", sender: "bot" },
       ]);
-
     } catch (error) {
       setMessages((prev) => [
         ...prev,
-        { text: "⚠️ Server error. Please try again.", sender: "bot" }
+        { text: "⚠️ Server error. Please try again.", sender: "bot" },
       ]);
     }
 
@@ -64,9 +63,9 @@ export default function ChatWindow({ onClose }) {
       await fetch("http://127.0.0.1:8000/chat/end", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ session_id: sessionId })
+        body: JSON.stringify({ session_id: sessionId }),
       });
     } catch (e) {
       console.log("End chat error");
@@ -77,7 +76,6 @@ export default function ChatWindow({ onClose }) {
 
   return (
     <div className="chat-window">
-
       {/* HEADER */}
       <div className="chat-header">
         <div>
@@ -93,13 +91,12 @@ export default function ChatWindow({ onClose }) {
       {/* BODY */}
       <div className="chat-body">
         <div className="messages">
-
           {messages.map((msg, index) => (
             <div key={index} className={`message ${msg.sender}`}>
-              {msg.sender === "bot" && (
-                <div className="avatar">AI</div>
-              )}
-              <div className="bubble">{msg.text}</div>
+              {msg.sender === "bot" && <div className="avatar">🤖</div>}
+              <div className="bubble">
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
+              </div>
             </div>
           ))}
 
@@ -114,7 +111,6 @@ export default function ChatWindow({ onClose }) {
               </div>
             </div>
           )}
-
         </div>
       </div>
 
@@ -129,7 +125,6 @@ export default function ChatWindow({ onClose }) {
         />
         <button onClick={handleSend}>Send</button>
       </div>
-
     </div>
   );
 }
