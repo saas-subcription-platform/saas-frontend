@@ -52,19 +52,7 @@ const HelpPage = () => {
                         </p>
                     </div>
 
-                    <div className="border border-border rounded-xl p-5">
-                        <h2 className="text-xl font-semibold text-dark mb-2">
-                            Live Chat
-                        </h2>
-
-                        <p className="text-dark/70 mb-4">
-                            Chat with our support team for quick assistance.
-                        </p>
-
-                        <button className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-xl">
-                            Start Chat
-                        </button>
-                    </div>
+                    
 
                 </div>
 
