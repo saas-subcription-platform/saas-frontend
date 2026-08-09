@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const teamApi = axios.create({
-    baseURL: "https://localhost:7173/api",
+    baseURL: "http://localhost:5034/api",
     headers: {
         "Content-Type": "application/json",
     },
