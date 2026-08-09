@@ -5,6 +5,7 @@ import Footer from "../components/FooterSection";
 import HeroSection from "../components/HeroSection";
 import PricingSection from "../components/PricingSection";
 import WorkflowSection from "../components/WorkflowSection";
+import Chatbot from "../../chatBot/pages/chatBot";  
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -14,7 +15,9 @@ function LandingPage() {
 
   useEffect(() => {
     if (location.hash) {
-      const element = document.getElementById(location.hash.replace("#", ""));
+      const element = document.getElementById(
+        location.hash.replace("#", "")
+      );
 
       if (element) {
         setTimeout(() => {
@@ -26,19 +29,18 @@ function LandingPage() {
       }
     }
   }, [location]);
-  
+
   return (
     <>
       <Navbar />
       <HeroSection />
-      <WorkflowSection />
       <FeaturesSection />
-      <section id="pricing">
-        <PricingSection />
-      </section>
+      <WorkflowSection />
+      <PricingSection />
       <AboutSection />
-      {/* <ContactUs/> */}
       <Footer />
+
+      <Chatbot />  
     </>
   );
 }
