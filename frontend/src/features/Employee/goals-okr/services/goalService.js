@@ -1,7 +1,7 @@
 import api from "../../../../api/api";
 
 
-const GOAL_BASE_URL = "http://localhost:5072";
+const GOAL_BASE_URL = import.meta.env.VITE_GOAL_API;
 
 
 // Get all goals

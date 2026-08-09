@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const timesheetApi = axios.create({
-    baseURL: "http://localhost:5114/api",
+    baseURL: import.meta.env.VITE_TIMESHEET_API,
 });
 
 timesheetApi.interceptors.request.use((config) => {

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const teamApi = axios.create({
-    baseURL: "http://localhost:5034/api",
+    baseURL: import.meta.env.VITE_TEAM_API,
     headers: {
         "Content-Type": "application/json",
     },

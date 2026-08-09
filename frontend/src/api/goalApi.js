@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const goalApi = axios.create({
-  baseURL: "http://localhost:5072",
+  baseURL: import.meta.env.VITE_GOAL_API,
   headers: {
     "Content-Type": "application/json",
   },
