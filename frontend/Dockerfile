@@ -11,10 +11,13 @@ COPY . .
 
 RUN npm run build
 
-
 # ---------- Production Stage ----------
 FROM nginx:alpine
 
+# Copy custom nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy React build
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80

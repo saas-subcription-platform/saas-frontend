@@ -9,6 +9,7 @@ import { getAllSubscriptionPlans } from "../services/subscriptionPlanService";
 import { getMySubscription } from "../services/subscriptionService";
 
 const RenewalPage = () => {
+  
   const navigate = useNavigate();
   const [showPlans, setShowPlans] = useState(false);
   const [hoveredPlan, setHoveredPlan] = useState(null);

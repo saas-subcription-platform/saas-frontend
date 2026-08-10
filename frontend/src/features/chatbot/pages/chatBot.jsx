@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import ChatButton from "./chatButton";
-import ChatWindow from "./ChatWindow";
+import ChatWindow from "./chatWindow";
 
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);

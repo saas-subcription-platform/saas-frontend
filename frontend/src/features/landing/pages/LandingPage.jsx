@@ -5,12 +5,13 @@ import Footer from "../components/FooterSection";
 import HeroSection from "../components/HeroSection";
 import PricingSection from "../components/PricingSection";
 import WorkflowSection from "../components/WorkflowSection";
-import Chatbot from "../../chatBot/pages/chatbot";  
+import Chatbot from "../../chatbot/pages/chatBot";  
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 function LandingPage() {
+  
   const location = useLocation();
 
   useEffect(() => {

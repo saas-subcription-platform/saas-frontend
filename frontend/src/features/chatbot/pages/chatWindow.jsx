@@ -60,7 +60,7 @@ export default function ChatWindow({ onClose }) {
   // ✅ End chat (clear backend session)
   const handleClose = async () => {
     try {
-      await fetch("http://127.0.0.1:8000/chat/end", {
+      await fetch(`${import.meta.env.VITE_AI_API}/chat/end`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
